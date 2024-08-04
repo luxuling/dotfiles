@@ -153,4 +153,7 @@ return {
     end,
     ft = { "markdown" },
   },
+  {
+    "mg979/vim-visual-multi",
+  },
 }
