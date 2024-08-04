@@ -16,14 +16,14 @@ keymap.set("n", "<Leader>q", ":quit<Return>", opts)
 keymap.set("n", "<Leader>Q", ":qa<Return>", opts)
 
 -- File explorer with NvimTree
-keymap.set("n", "<Leader>f", ":NvimTreeFindFile<Return>", opts)
-keymap.set("n", "<Leader>t", ":NvimTreeToggle<Return>", opts)
+keymap.set("n", "<Leader>e", ":NvimTreeToggle<Return>", opts)
+keymap.set("n", "<escape>", ":NvimTreeCollapse<Return>", opts)
 
 -- Tabs
 keymap.set("n", "te", ":tabedit")
 keymap.set("n", "<tab>", ":tabnext<Return>", opts)
 keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
-keymap.set("n", "tw", ":tabclose<Return>", opts)
+keymap.set("n", "tt", LazyVim.ui.bufremove, opts)
 
 -- Split window
 keymap.set("n", "ss", ":split<Return>", opts)
