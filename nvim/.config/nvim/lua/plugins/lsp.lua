@@ -4,6 +4,8 @@ return {
     "williamboman/mason.nvim",
     opts = function(_, opts)
       vim.list_extend(opts.ensure_installed, {
+        "stylua",
+        "selene",
         "luacheck",
         "shellcheck",
         "shfmt",
@@ -18,7 +20,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
-      inlay_hints = { enabled = true },
+      inlay_hints = { enabled = false },
       ---@type lspconfig.options
       servers = {
         cssls = {},
@@ -57,10 +59,11 @@ return {
             },
           },
         },
-        html = {
+        html = {},
+        yamlls = {
           settings = {
-            format = {
-              enabled = true,
+            yaml = {
+              keyOrdering = false,
             },
           },
         },
@@ -119,7 +122,7 @@ return {
                 unusedLocalExclude = { "_*" },
               },
               format = {
-                enable = true,
+                enable = false,
                 defaultConfig = {
                   indent_style = "space",
                   indent_size = "2",
@@ -134,10 +137,20 @@ return {
     },
   },
   {
-    "nvim-cmp",
-    dependencies = { "hrsh7th/cmp-emoji" },
-    opts = function(_, opts)
-      table.insert(opts.sources, { name = "emoji" })
+    "neovim/nvim-lspconfig",
+    opts = function()
+      local keys = require("lazyvim.plugins.lsp.keymaps").get()
+      vim.list_extend(keys, {
+        {
+          "gd",
+          function()
+            -- DO NOT RESUSE WINDOW
+            require("telescope.builtin").lsp_definitions({ reuse_win = false })
+          end,
+          desc = "Goto Definition",
+          has = "definition",
+        },
+      })
     end,
   },
 }

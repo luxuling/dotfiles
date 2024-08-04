@@ -3,9 +3,14 @@ return {
 
   {
     "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    event = { "BufReadPre", "BufNewFile" },
     opts = {
       ensure_installed = {
         "astro",
+        "javascript",
+        "typescript",
+        "tsx",
         "cmake",
         "cpp",
         "css",
