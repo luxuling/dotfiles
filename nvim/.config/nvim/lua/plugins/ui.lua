@@ -86,6 +86,7 @@ return {
         view = {
           width = 30,
           relativenumber = true,
+          side = "right",
         },
         renderer = {
           group_empty = true,
