@@ -200,11 +200,11 @@ for_window [class="Thunar"] move container to workspace $ws7
 for_window [class="DBeaver"] move container to workspace $ws8
 
 # class                 border  bground text    indicator child_border
-#client.focused          #a292a3 #a292a3 #F8F8F2 #a292a3   #a292a3
-#client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
-#client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
-#client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
-#client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
+client.focused          #a292a3 #a292a3 #F8F8F2 #a292a3   #a292a3
+client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
+client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
+client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
+client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
 
 #client.background       #F8F8F2
 
@@ -214,7 +214,10 @@ hide_edge_borders both
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 
 # gaps
+font pango:dina 0
 for_window [class="^.*"] border pixel 0
+for_window [class=".*"] title_format ""
+
 gaps inner 8
 gaps outer 0
 smart_gaps off
