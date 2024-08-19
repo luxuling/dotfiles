@@ -1,4 +1,4 @@
 return {
-	"wakatime/vim-wakatime",
+	"andweeb/presence.nvim",
 	lazy = false,
 }
