@@ -41,6 +41,9 @@ keymap.set("n", "<C-S-l>", "<C-w>>")
 keymap.set("n", "<C-S-k>", "<C-w>+")
 keymap.set("n", "<C-S-j>", "<C-w>-")
 
+-- Word Wrap
+keymap.set("n", "<leader>uw", ":ToggleWrapMode<Return>", opts)
+
 -- Diagnostics
 keymap.set("n", "<C-o>", function()
 	vim.diagnostic.goto_next()

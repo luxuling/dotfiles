@@ -36,13 +36,7 @@ return {
 		lazy = false,
 		config = function()
 			require("colorizer").setup() -- Optional: Configure the plugin
-
-			-- Automatically execute :ColorizerToggle when Neovim starts
-			vim.api.nvim_create_autocmd("VimEnter", {
-				callback = function()
-					vim.cmd("ColorizerToggle")
-				end,
-			})
+			vim.cmd("ColorizerToggle")
 		end,
 	},
 
