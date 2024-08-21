@@ -7,6 +7,7 @@ return {
 		build = ":TSUpdate",
 		event = { "BufReadPre", "BufNewFile" },
 		opts = {
+			auto_install = true,
 			ensure_installed = {
 				"astro",
 				"html",
@@ -39,12 +40,6 @@ return {
 				enable = true,
 				use_virtual_text = true,
 				lint_events = { "BufWrite", "CursorHold" },
-			},
-			autotag = {
-				enable = true,
-				enable_rename = true,
-				enable_close = true,
-				enable_close_on_slash = true,
 			},
 			playground = {
 				enable = true,
