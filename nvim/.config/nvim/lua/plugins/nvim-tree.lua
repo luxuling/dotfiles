@@ -18,9 +18,6 @@ return {
 
 				-- default mappings
 				api.config.mappings.default_on_attach(bufnr)
-
-				-- custom mappings
-				vim.keymap.set("n", "t", api.node.open.tab, opts("Tab"))
 			end,
 			actions = {
 				open_file = {
@@ -35,11 +32,12 @@ return {
 				relativenumber = false,
 				side = "left",
 			},
-			renderer = {
-				group_empty = true,
-			},
 			filters = {
-				dotfiles = false,
+				custom = { "^.git$", "node_modules" },
+			},
+			git = {
+				enable = true,
+				ignore = false,
 			},
 			log = {
 				enable = true,
