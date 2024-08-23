@@ -44,6 +44,10 @@ keymap.set("n", "<C-S-j>", "<C-w>-")
 -- Word Wrap
 keymap.set("n", "<leader>uw", ":ToggleWrapMode<Return>", opts)
 
+-- Terminal
+keymap.set("n", "<C-/>", ":ToggleTerm direction=float<Return>", opts)
+keymap.set("t", "<C-/>", "<C-\\><C-n> :ToggleTerm<Return>", opts)
+
 -- Diagnostics
 keymap.set("n", "<C-o>", function()
 	vim.diagnostic.goto_next()
