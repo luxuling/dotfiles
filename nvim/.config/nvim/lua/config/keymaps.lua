@@ -52,3 +52,12 @@ keymap.set("t", "<C-/>", "<C-\\><C-n> :ToggleTerm<Return>", opts)
 keymap.set("n", "<C-o>", function()
 	vim.diagnostic.goto_next()
 end, opts)
+
+-- Rename
+keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+
+-- Code Action
+keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+
+-- Go to declaration
+keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
