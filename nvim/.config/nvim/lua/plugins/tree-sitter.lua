@@ -30,6 +30,7 @@ return {
 				"sql",
 				"svelte",
 				"bash",
+				"vue",
 			},
 
 			highlight = {
