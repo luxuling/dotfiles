@@ -14,6 +14,7 @@ return {
 
 		local trouble = require("trouble")
 		local trouble_telescope = require("trouble.sources.telescope")
+		local builtin = require("telescope.builtin")
 
 		-- or create your custom action
 		local custom_actions = transform_mod({
@@ -45,5 +46,7 @@ return {
 		keymap.set("n", "fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy find recent files" })
 		keymap.set("n", "fs", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
 		keymap.set("n", "fc", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor in cwd" })
+		keymap.set("n", "gr", builtin.lsp_references, { desc = "GO To References" })
+		keymap.set("n", "gI", builtin.lsp_implementations, { desc = "Go To Implementations" })
 	end,
 }
