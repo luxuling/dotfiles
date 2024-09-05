@@ -54,10 +54,15 @@ keymap.set("n", "<C-o>", function()
 end, opts)
 
 -- Rename
-keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+keymap.set("n", "<leader>cr", function()
+	return ":IncRename " .. vim.fn.expand("<cword>")
+end, { expr = true })
 
 -- Code Action
 keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 
 -- Go to declaration
 keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+
+-- Markdown
+keymap.set("n", "<leader>mp", ":MarkdownPreviewToggle<Return>", opts)

@@ -20,7 +20,7 @@ return {
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		build = "cd app && yarn install",
 		init = function()
-			vim.g.mkdp_filetypes = { "markdown" }
+			vim.g.mkdp_filetypes = { "markdown", "mdx" }
 		end,
 		ft = { "markdown" },
 	},
@@ -58,8 +58,9 @@ return {
 	-- Incremental rename
 	{
 		"smjonas/inc-rename.nvim",
-		cmd = "IncRename",
-		config = true,
+		config = function()
+			require("inc_rename").setup()
+		end,
 	},
 
 	-- Refactoring tool

@@ -2,7 +2,7 @@ return {
 	{
 		"andrewferrier/wrapping.nvim",
 		config = function()
-			require("wrapping").setup()
+			require("wrapping").setup({})
 		end,
 	},
 	{
@@ -39,5 +39,10 @@ return {
 				},
 			})
 		end,
+	},
+	{
+		"davidmh/mdx.nvim",
+		config = true,
+		dependencies = { "nvim-treesitter/nvim-treesitter" },
 	},
 }

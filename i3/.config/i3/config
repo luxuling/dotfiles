@@ -10,6 +10,7 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod1
+exec_always --no-startup-id killall udiskie
 exec_always --no-startup-id killall polybar
 exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
 exec_always --no-startup-id picom
@@ -18,6 +19,7 @@ bindsym $mod+space exec rofi -show combi
 exec_always --no-startup-id killall dunst
 exec_always --no-startup-id dunst --config ~/.config/dunst/dunstrc
 exec_always --no-startup-id xfce4-power-manager
+exec_always --no-startup-id udiskie -A -t 
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
