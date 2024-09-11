@@ -45,7 +45,7 @@ keymap.set("n", "<C-S-j>", "<C-w>-")
 keymap.set("n", "<leader>uw", ":ToggleWrapMode<Return>", opts)
 
 -- Terminal
-keymap.set("n", "<C-/>", ":ToggleTerm direction=float<Return>", opts)
+keymap.set("n", "<C-/>", ":ToggleTerm size=40 direction=horizontal<Return>", opts)
 keymap.set("t", "<C-/>", "<C-\\><C-n> :ToggleTerm<Return>", opts)
 
 -- Diagnostics
