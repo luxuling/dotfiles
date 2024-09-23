@@ -200,6 +200,7 @@ for_window [class="Spotify"] move container to workspace $ws10
 for_window [class="Google-chrome"] move container to workspace $ws2
 for_window [class="Thunar"] move container to workspace $ws7
 for_window [class="DBeaver"] move container to workspace $ws8
+for_window [class="Postman"] move container to workspace $ws3
 
 # class                 border  bground text    indicator child_border
 client.focused          #a292a3 #a292a3 #F8F8F2 #a292a3   #a292a3
