@@ -23,16 +23,14 @@ return {
 			},
 			format_on_save = {
 				lsp_fallback = true,
-				async = false,
-				timeout_ms = 1000,
+				async = true,
 			},
 		})
 
 		vim.keymap.set({ "n", "v" }, "<leader>fm", function()
 			conform.format({
 				lsp_fallback = true,
-				async = false,
-				timeout_ms = 1000,
+				async = true,
 			})
 		end, { desc = "Format file or range (in visual mode)" })
 	end,
