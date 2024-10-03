@@ -194,7 +194,8 @@ mode "resize" {
         bindsym $mod+r mode "default"
 }
 bindsym $mod+r mode "resize"
-floating_maximum_size -1 x -1
+
+floating_maximum_size 1000 x 1000
 
 for_window [class="discord"] move container to workspace $ws9
 for_window [class="Spotify"] move container to workspace $ws10
