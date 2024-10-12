@@ -1,21 +1,13 @@
 return {
-	"Shatur/neovim-ayu",
+	"projekt0n/github-nvim-theme",
 	priority = 1000,
 	lazy = false,
 	config = function()
-		require("ayu").setup({
-			overrides = {
-				Normal = { bg = "None" },
-				ColorColumn = { bg = "None" },
-				SignColumn = { bg = "None" },
-				Folded = { bg = "None" },
-				FoldColumn = { bg = "None" },
-				CursorLine = { bg = "None" },
-				CursorColumn = { bg = "None" },
-				WhichKeyFloat = { bg = "None" },
-				VertSplit = { bg = "None" },
+		require("github-theme").setup({
+			options = {
+				transparent = true,
 			},
 		})
-		vim.cmd("colorscheme ayu-mirage")
+		vim.cmd("colorscheme github_dark")
 	end,
 }
