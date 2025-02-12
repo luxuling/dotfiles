@@ -15,6 +15,13 @@ return {
 				"nvim-tree",
 			},
 			sections = {
+				lualine_a = {
+					{
+						"filename",
+						file_status = true,
+						path = 1,
+					},
+				},
 				lualine_x = {
 					{ "encoding" },
 					{ "fileformat" },
