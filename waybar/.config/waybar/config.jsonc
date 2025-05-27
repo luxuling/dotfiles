@@ -2,7 +2,7 @@
   "position": "top",
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["mpris",],
-  "modules-right": ["memory", "pulseaudio", "clock", "custom/colorpicker", "tray"],
+  "modules-right": ["memory", "bluetooth", "pulseaudio", "clock", "custom/colorpicker", "tray"],
   "clock": {
     "format": "<span foreground='#f5c2e7'>  </span>{:%a %d %H:%M}",
     "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
@@ -37,5 +37,14 @@
       "default": "",
       "paused": ""
     }
+  },
+  "bluetooth": {
+    "format": " {status}",
+    "format-of": "󰂲 Off",
+    "format-on": " On",
+    "format-disabled": " Disabled",
+    "format-connected": "󰂱 {device_alias}",
+    "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+    "on-click": "blueman-manager"
   }
 }

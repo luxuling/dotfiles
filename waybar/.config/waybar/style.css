@@ -13,7 +13,6 @@ window#waybar {
     color: @overlay0;
     transition-property: background-color;
     transition-duration: 0.1s;
-    border-bottom: 1px solid @overlay1;
 }
 
 #window {
@@ -67,6 +66,7 @@ button:hover {
 #tray,
 #mode,
 #custom-colorpicker,
+#bluetooth,
 #scratchpad {
   margin-top: 2px;
   margin-bottom: 2px;
@@ -77,13 +77,13 @@ button:hover {
 }
 
 #clock {
-    color: @maroon;
-    border-bottom: 2px solid @maroon;
+    color: @pink;
+    border-bottom: 2px solid @pink;
 }
 
 #clock.date {
-    color: @mauve;
-    border-bottom: 2px solid @mauve;
+    color: @pink;
+    border-bottom: 2px solid @pink;
 }
 
 #tray {
@@ -92,8 +92,8 @@ button:hover {
 }
 
 #pulseaudio {
-    color: @blue;
-    border-bottom: 2px solid @blue;
+    color: @mauve;
+    border-bottom: 2px solid @mauve;
 }
 
 #memory {
@@ -104,6 +104,11 @@ button:hover {
 #custom-colorpicker {
     color: @teal;
     border-bottom: 2px solid @teal;
+}
+
+#bluetooth {
+    color: @blue;
+    border-bottom: 2px solid @blue;
 }
 
 #mpris {
