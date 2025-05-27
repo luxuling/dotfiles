@@ -1,0 +1,27 @@
+{
+  "position": "top",
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["hyprland/window"],
+  "modules-right": ["memory", "pulseaudio", "clock", "custom/colorpicker", "tray"],
+  "clock": {
+    "format": "<span foreground='#f5c2e7'>   </span>{:%a %d %H:%M}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+  },
+  "pulseaudio": {
+      "format": "{icon}  {volume}%",
+      "format-muted": "",
+      "format-icons": {
+          "default": ["", "", " "]
+      },
+      "on-click": "pavucontrol"
+  },
+  "memory":{
+    "format": " {used} GB",
+    "tooltip-format": " {used:0.1f}G/{total:0.1f} GB"
+  },
+  "custom/colorpicker":{
+    "format": "",
+    "tooltip-format": "Color Picker",
+    "on-click": "hyprpicker --a"
+  }
+}
