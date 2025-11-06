@@ -1,0 +1,72 @@
+@define-color	lavender  #b4befe;
+@define-color	lavender-rgb  rgb(180, 190, 254);
+@define-color	text  #cdd6f4;
+@define-color	text-rgb  rgb(205, 214, 244);
+
+* {
+  font-family: 'Maple Mono NF CN';
+  font-size: 18px;
+}
+
+/* Window */
+window {
+  margin: 0px;
+  padding: 10px;
+  border: 1px solid @text;
+  border-radius: 8px;
+  background-color: transparent;
+}
+
+/* Inner Box */
+#inner-box {
+  background-color: transparent;
+}
+
+/* Outer Box */
+#outer-box {
+  border: none;
+  background-color: transparent;
+}
+
+/* Scroll */
+#scroll {
+  margin: 0px;
+  padding: 10px;
+  border-radius: 0.2em;
+  background-color: transparent;
+}
+
+/* Input */
+#input {
+  padding: 10px;
+  outline: none;
+  color: none;
+  margin: 10px;
+  border: 1px solid @text;
+  color: @text;
+  background-color: transparent;
+}
+
+/* Text */
+#text {
+  margin: 5px;
+  border: none;
+  color: @text;
+}
+
+#entry {
+  border: 1px solid @text;
+  margin-top: 5px;
+  padding: 10px;
+  background-color: transparent;
+}
+
+#entry arrow {
+  border: 1px solid @text;
+}
+
+/* Selected Entry */
+#entry:selected {
+  border: 1px solid @lavender;
+  background-color: rgba(180, 190, 254, 0.3);
+}

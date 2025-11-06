@@ -1,0 +1,87 @@
+{
+  "position": "bottom",
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["mpris", "clock"],
+  "modules-right": ["memory", "bluetooth", "pulseaudio",  "custom/colorpicker", "custom/streamkeygenerator", "custom/notification",  "tray"],
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "format-icons": {
+      "active": "",
+      "default": ""
+    },
+  },
+  "clock": {
+    "format": "<span foreground='#f5c2e7'>  </span>{:%a %d %H:%M}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+  },
+  "pulseaudio": {
+      "format": "{icon}  {volume}%",
+      "format-muted": "",
+      "format-icons": {
+          "default": ["", "", " "]
+      },
+      "on-click": "pavucontrol"
+  },
+  "memory":{
+    "format": " {used} GB",
+    "tooltip-format": " {used:0.1f}G/{total:0.1f} GB"
+  },
+  "custom/colorpicker":{
+    "format": "",
+    "tooltip-format": "Color Picker",
+    "on-click": "hyprpicker --a"
+  },
+  "mpris": {
+    "interval": 1,
+    "format": "{status_icon} <b>{artist}</b> - <i>{title}</i>",
+    "format-paused": "{status_icon} <b>{artist}</b> - <i>{title}</i>",
+    "player-icons": {
+      "default": "",
+      "firefox": "",
+      "spotify": ""
+    },
+    "status-icons": {
+      "default": "",
+      "paused": ""
+    }
+  },
+  "bluetooth": {
+    "format": " {status}",
+    "format-of": "󰂲 Off",
+    "format-on": " On",
+    "format-disabled": " Disabled",
+    "format-connected": "󰂱 {device_alias}",
+    "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+    "on-click": "blueman-manager"
+  },
+  "custom/streamkeygenerator": {
+    "format": " ",
+    "tooltip-format": "Generate a new Tiktok Stream Key",
+    "on-click": "~/MINE/stream/StreamLabsTikTokStreamKeyGenerator.dist/StreamLabsTikTokStreamKeyGenerator.bin"
+  },
+  "custom/notification": {
+    "tooltip": true,
+    "format": "<span>{icon}</span>",
+    "format-icons": {
+      "notification": "󱅫",
+      "none": "󰂜",
+      "dnd-notification": "󰂠",
+      "dnd-none": "󰪓",
+      "inhibited-notification": "󰂛",
+      "inhibited-none": "󰪑",
+      "dnd-inhibited-notification": "󰂛",
+      "dnd-inhibited-none": "󰪑"
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8,
+   }
+  },
+}

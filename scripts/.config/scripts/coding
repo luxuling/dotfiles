@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Start a new tmux session
+tmux new-session -d -s work 
+
+tmux source ~/.tmux.conf
+
+# Rename the first window to 'neovim'
+tmux rename-window -t  work:1 'neovim'
+
+# Create a second window labeled 'terminal'
+tmux new-window -t  work:2 -n 'terminal'
+
+# Switch back to the first window (neovim) to make it active
+tmux select-window -t  work:1
+
+# Attach to the tmux session
+tmux attach-session -t work 
