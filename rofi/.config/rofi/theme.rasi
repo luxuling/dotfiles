@@ -1,0 +1,94 @@
+* {
+  background-color: rgba(36, 39, 58, 0.5);
+  text-color: rgb(183 189 248);
+  border-radius: 9px;
+  font: "Maple Mono NF CN 12";
+}
+
+window {
+  width: 500px;
+  height: 600px;
+  border-color: rgb(183 189 248);
+  border: 1px;
+}
+
+mainbox {
+  orientational: vertical;
+  children: [inputbar, mode-switcher, listview];
+  padding: 10px;
+}
+
+inputbar {
+  orientational: horizontal;
+  children: [prompt, entry];
+  background-color: rgba(0, 0, 0, 0);
+}
+
+prompt {
+  padding: 10px 40px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+entry {
+  placeholder: "";
+  cursor: pointer;
+  cursor-color: rgb(183 189 248);
+  background-color: rgba(0, 0, 0, 0);
+  cursor-width: 8px;
+  hide-cursor-on-empty: true;
+  padding: 10px;
+}
+
+mode-switcher {
+  spacing: 100px;
+  margin: 10px 0px 10px 0px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+button {
+  padding: 8px;
+  border-color: rgb(183 189 248);
+  border: 1px;
+}
+
+button selected {
+  background-color: rgb(183 189 248);
+  text-color: rgb(49 50 68);
+}
+
+element {
+  orientational: horizontal;
+  children: [element-icon, element-text];
+  background-color: rgba(0, 0, 0, 0);
+  padding: 10px;
+}
+
+listview {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+element-icon {
+  size: 1em;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+element-text {
+  vertical-align: 0.5;
+  margin: 0px 0px 0px 10px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+element selected {
+  background-color: rgb(183 189 248);
+  text-color: rgb(49 50 68);
+}
+
+element-icon selected {
+  background-color: rgb(183 189 248);
+  text-color: rgb(49 50 68);
+}
+
+element-text selected {
+  background-color: rgb(183 189 248);
+  text-color: rgb(49 50 68);
+}
