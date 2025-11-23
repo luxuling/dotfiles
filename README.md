@@ -3,7 +3,7 @@ This repository contains my personal dotfiles for configuring my development env
 
 ## Screenshot
 
-![Screenshot](./assets/ss.png)
+![Screenshot](https://raw.githubusercontent.com/luxuling/dotfiles/refs/heads/main/assets/ss.png)
 
 ## What i use
 - **Editor**: [NeoVim](https://neovim.io/)
@@ -15,6 +15,7 @@ This repository contains my personal dotfiles for configuring my development env
 - **Terminal Multiplexer**: [Tmux](https://github.com/tmux/tmux)
 - **Bar**: [Waybar](https://github.com/Alexays/Waybar)
 - **Font**: [Maple Mono](https://github.com/subframe7536/maple-font)
+- **App Launcher**: [Rofi](https://github.com/davatorium/rofi)
 
 ## How to use
 To use these dotfiles, you can clone the repository and create symbolic links to the appropriate locations in your home directory. Here's a basic example of how to do this:
