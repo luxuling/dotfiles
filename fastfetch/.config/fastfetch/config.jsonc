@@ -30,6 +30,12 @@
       "keyColor": "33"
     },
     {
+      "type": "cpu",
+      "key": "cpu            ",
+      "temp": true,
+      "keyColor": "33"
+    },
+    {
       "type": "kernel",
       "key": "linux kernel   ",
       "keyColor": "33"

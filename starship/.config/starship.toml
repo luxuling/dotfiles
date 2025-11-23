@@ -3,7 +3,7 @@ format = '''
 [│](bold green)$directory$git_branch$git_status$git_commit
 [└](bold green)'''
 
-scan_timeout = 10
+scan_timeout = 20
 
 add_newline = false 
 

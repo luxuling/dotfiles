@@ -30,6 +30,10 @@ source <(ng completion script)
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 export PATH="$PATH:/var/lib/snapd/snap/bin"
+export EDITOR="nvim"
 
 . "$HOME/.local/bin/env"
 eval "$(uv generate-shell-completion zsh)"
+
+# opencode
+export PATH=/home/lixuling/.opencode/bin:$PATH

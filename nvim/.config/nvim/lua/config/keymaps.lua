@@ -7,8 +7,8 @@ keymap.set("n", "x", '"_x')
 keymap.set("n", "+", "<C-a>")
 keymap.set("n", "-", "<C-x>")
 
--- Select all
-keymap.set("n", "<C-a>", "gg<S-v>G")
+-- -- Select all
+-- keymap.set("n", "<C-a>", "gg<S-v>G")
 
 -- Save file and quit
 keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
