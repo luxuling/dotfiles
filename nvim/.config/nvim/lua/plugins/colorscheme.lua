@@ -3,12 +3,7 @@ return {
 	priority = 1000,
 	lazy = false,
 	config = function()
-		require("starry").setup({
-      disable = {
-        background = true, -- disable background
-      },
-		})
+		require("starry").setup({})
 		vim.cmd("colorscheme mariana")
 	end,
 }
-
