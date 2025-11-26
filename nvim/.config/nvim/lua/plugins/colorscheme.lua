@@ -7,10 +7,9 @@ return {
 			options = {
 				terminal_colors = false,
 				cursorline = true,
-				transparency = true,
 			},
 			highlights = {
-				Comment = { fg = "#4DFFBE", bg = "#FFFFFF", italic = true },
+				Comment = { fg = "#4DFFBE", italic = true },
 			},
 		})
 		vim.cmd("colorscheme vaporwave")
