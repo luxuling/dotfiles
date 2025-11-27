@@ -26,7 +26,11 @@ return {
 					},
 				},
 				lualine_b = { "branch", "diff", "diagnostics" },
-				lualine_c = { "filename" },
+				lualine_c = { {
+					"filename",
+					file_status = true,
+					path = 2,
+				} },
 				lualine_x = { "encoding", "fileformat", "filetype" },
 				lualine_y = {
 					{ "progress", color = { fg = "#ffffff", bg = "none" } },
