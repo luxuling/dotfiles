@@ -78,6 +78,7 @@ button:hover {
 #mode,
 #custom-colorpicker,
 #custom-streamkeygenerator,
+#custom-bongocat,
 #custom-notification,
 #bluetooth,
 #mpris {
@@ -122,6 +123,12 @@ button:hover {
 #custom-streamkeygenerator {
     color: @flamingo;
     padding-right: 18px;
+}
+
+#custom-bongocat {
+    color: @white;
+    padding-right: 22px;
+    padding-left: 18px;
 }
 
 #bluetooth {

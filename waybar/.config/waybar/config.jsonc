@@ -2,7 +2,7 @@
   "position": "bottom",
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["mpris", "clock"],
-  "modules-right": ["memory", "bluetooth", "pulseaudio",  "custom/colorpicker", "custom/streamkeygenerator", "custom/notification",  "tray"],
+  "modules-right": ["memory", "bluetooth", "pulseaudio",  "custom/colorpicker", "custom/bongocat", "custom/notification",  "tray"],
   "hyprland/workspaces": {
     "format": "{icon}",
     "format-icons": {
@@ -54,10 +54,15 @@
     "format-connected-battery": " {device_alias} {device_battery_percentage}%",
     "on-click": "blueman-manager"
   },
-  "custom/streamkeygenerator": {
-    "format": " ",
-    "tooltip-format": "Generate a new Tiktok Stream Key",
-    "on-click": "~/MINE/stream/StreamLabsTikTokStreamKeyGenerator.dist/StreamLabsTikTokStreamKeyGenerator.bin"
+  // "custom/streamkeygenerator": {
+  //   "format": " ",
+  //   "tooltip-format": "Generate a new Tiktok Stream Key",
+  //   "on-click": "~/MINE/stream/StreamLabsTikTokStreamKeyGenerator.dist/StreamLabsTikTokStreamKeyGenerator.bin"
+  // },
+  "custom/bongocat": {
+    "format": "",
+    "tooltip-format": "Bongocat",
+    "on-click": "bongocat -c ~/.config/bongocat.conf -t"
   },
   "custom/notification": {
     "tooltip": true,
