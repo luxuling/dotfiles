@@ -13,5 +13,9 @@ return {
 			},
 		})
 		vim.cmd("colorscheme vaporwave")
+		vim.api.nvim_set_hl(0, "Visual", {
+			bg = "#f4dbd6",
+			blend = 0,
+		})
 	end,
 }
