@@ -37,3 +37,11 @@ eval "$(uv generate-shell-completion zsh)"
 
 # opencode
 export PATH=/home/lixuling/.opencode/bin:$PATH
+
+# pnpm
+export PNPM_HOME="/home/lixuling/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
