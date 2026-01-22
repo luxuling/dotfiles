@@ -43,7 +43,8 @@
     "status-icons": {
       "default": "",
       "paused": ""
-    }
+    },
+    "max-length": 50 
   },
   "bluetooth": {
     "format": " {status}",

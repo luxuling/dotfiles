@@ -9,7 +9,7 @@ vim.lsp.enable({
     "vue-ls",
     "eslint",
     "qmlls",
-    "mdx_analyzer"
+    "mdx_analyzer",
 })
 
 -- LSP servers are automatically managed by Mason

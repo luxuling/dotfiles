@@ -30,6 +30,7 @@ source <(ng completion script)
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 export PATH="$PATH:/var/lib/snapd/snap/bin"
+export PATH="$PATH:/home/lixuling/.cargo/bin"
 export EDITOR="nvim"
 
 . "$HOME/.local/bin/env"

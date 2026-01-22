@@ -20,11 +20,15 @@ return {
 				liquid = { "prettier" },
 				lua = { "stylua" },
 				python = { "isort", "black" },
+				sql = { "sleek" },
 			},
 			formatters = {
+				sleek = {
+					command = "sleek",
+					args = "--indent-spaces=2 --lines-between-queries=3",
+				},
 				prettier = {
 					require_cwd = true,
-
 					cwd = require("conform.util").root_file({
 						".prettierrc",
 						".prettierrc.json",

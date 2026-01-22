@@ -6,6 +6,7 @@ return {
 		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 		"nvim-tree/nvim-web-devicons",
 		"folke/todo-comments.nvim",
+		"nvim-telescope/telescope-media-files.nvim",
 	},
 	config = function()
 		local telescope = require("telescope")
@@ -42,14 +43,21 @@ return {
 					},
 				},
 			},
+			extensions = {
+				media_files = {
+					filetypes = { "png", "webp", "jpg", "jpeg" },
+				},
+			},
 		})
 
 		telescope.load_extension("fzf")
+		telescope.load_extension("media_files")
 
 		-- set keymaps
 		local keymap = vim.keymap -- for conciseness
 
 		keymap.set("n", "ff", builtin.find_files, { desc = "Fuzzy find files in cwd" })
+		keymap.set("n", "fd",  "<cmd>Telescope media_files<cr>", { desc = "Find Images" })
 		keymap.set("n", "fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy find recent files" })
 		keymap.set("n", "fs", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
 		keymap.set("n", "fc", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor in cwd" })
