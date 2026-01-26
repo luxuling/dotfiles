@@ -26,6 +26,7 @@ return {
 
 		telescope.setup({
 			defaults = {
+				dynamic_preview_title = true,
 				file_ignore_patterns = {
 					"node_modules/",
 					"%.env",
@@ -33,7 +34,7 @@ return {
 					"package-lock.json",
 					"target/",
 				},
-				path_display = { "smart" },
+				path_display = { "absolute" },
 				mappings = {
 					i = {
 						["<C-k>"] = actions.move_selection_previous, -- move to prev result
@@ -57,7 +58,7 @@ return {
 		local keymap = vim.keymap -- for conciseness
 
 		keymap.set("n", "ff", builtin.find_files, { desc = "Fuzzy find files in cwd" })
-		keymap.set("n", "fd",  "<cmd>Telescope media_files<cr>", { desc = "Find Images" })
+		keymap.set("n", "fd", "<cmd>Telescope media_files<cr>", { desc = "Find Images" })
 		keymap.set("n", "fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy find recent files" })
 		keymap.set("n", "fs", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
 		keymap.set("n", "fc", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor in cwd" })
