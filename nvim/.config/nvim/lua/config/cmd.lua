@@ -37,5 +37,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 		opts.desc = "Restart LSP"
 		keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+
+    opts.desc = "Copy file path to clipboard"
+    keymap.set("n", "<leader>cp", function()
+        local path = vim.fn.expand("%:p")
+        vim.fn.setreg("+", path)
+        vim.notify('Copied "' .. path .. '" to the clipboard!')
+    end, opts)
+
 	end,
 })

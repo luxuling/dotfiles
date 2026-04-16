@@ -10,6 +10,7 @@ vim.lsp.enable({
     "eslint",
     "qmlls",
     "mdx_analyzer",
+    "docker-language-server",
 })
 
 -- LSP servers are automatically managed by Mason

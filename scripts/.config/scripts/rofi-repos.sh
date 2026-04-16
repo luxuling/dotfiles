@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-terminal="kitty"
+terminal="ghostty"
 base="$HOME/MINE/codes"
 
 #PICK CATEGORY
@@ -27,6 +27,4 @@ pkill -x "$terminal" 2>/dev/null || true
 sleep 0.2
 
 #LAUNCH AND BLOCK
-exec "$terminal" sh -c '
-    "'"$HOME"'/.config/scripts/coding" "'"$final_dir"'"
-'
+exec "$terminal" -e "$HOME/.config/scripts/coding" "$final_dir"

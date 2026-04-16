@@ -17,15 +17,6 @@ autoload -Uz compinit
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 compinit
-# End of lines added by compinstall
-
-
-# Load Angular CLI autocompletion.
-source <(ng completion script)
-
-
-# Load Angular CLI autocompletion.
-source <(ng completion script)
 
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
