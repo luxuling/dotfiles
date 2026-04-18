@@ -1,5 +1,6 @@
 # Lines configured by zsh-newuser-install
 eval "$(starship init zsh)"
+eval "$(fnm env --use-on-cd --shell zsh)"
 HISTFILE=~/.histfile
 HISTSIZE=10000
 SAVEHIST=1000
