@@ -24,4 +24,5 @@ QtObject {
 	readonly property int bottomRadius: 18
 	readonly property int gap: 14
 	readonly property int innerGap: 8
+	readonly property int drawerHeight: 200
 }

@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import Quickshell
 import "modules"
 
@@ -9,13 +10,38 @@ Item {
 	required property string screenName
 
 	property bool open: false
+	property bool drawerOpen: false
 
 	readonly property int screenBudget: Math.max(0, screenWidth - 48)
 	readonly property int barHeight: Theme.foldedHeight
 	readonly property int groupGap: open ? 36 : Theme.gap
+	readonly property bool drawerHovered: clockHover.hovered || drawerHover.hovered
 
 	implicitWidth: Math.min(screenBudget, Theme.melt * 2 + Theme.sidePad * 2 + workWrap.width + clockItem.width + meters.width + extraSlot.width)
-	implicitHeight: barHeight
+	implicitHeight: barHeight + (drawerOpen ? Theme.drawerHeight : 0)
+
+	// NOTE: the fold is delayed so the cursor can cross from the clock into the drawer.
+	onDrawerHoveredChanged: {
+		if (drawerHovered) {
+			drawerFold.stop()
+			drawerOpen = true
+			return
+		}
+
+		drawerFold.start()
+	}
+
+	onDrawerOpenChanged: {
+		if (drawerOpen)
+			calendar.reset()
+	}
+
+	Behavior on implicitHeight {
+		NumberAnimation {
+			duration: 160
+			easing.type: Easing.OutQuad
+		}
+	}
 
 	HoverHandler {
 		id: hover
@@ -36,6 +62,13 @@ Item {
 
 		interval: 220
 		onTriggered: root.open = false
+	}
+
+	Timer {
+		id: drawerFold
+
+		interval: 220
+		onTriggered: root.drawerOpen = false
 	}
 
 	NotchShape {
@@ -77,6 +110,8 @@ Item {
 
 				anchors.centerIn: parent
 			}
+
+			HoverHandler { id: clockHover }
 		}
 
 		Item {
@@ -144,6 +179,49 @@ Item {
 				}
 
 				Tray { id: tray }
+			}
+		}
+	}
+
+	Item {
+		y: root.barHeight
+		width: root.width
+		height: root.height - root.barHeight
+		clip: true
+
+		HoverHandler { id: drawerHover }
+
+		RowLayout {
+			anchors.left: parent.left
+			anchors.right: parent.right
+			anchors.top: parent.top
+			anchors.leftMargin: Theme.melt + Theme.gap
+			anchors.rightMargin: Theme.melt + Theme.gap
+			height: Theme.drawerHeight - Theme.gap
+			spacing: Theme.innerGap
+			opacity: root.drawerOpen ? 1 : 0
+
+			Behavior on opacity {
+				NumberAnimation { duration: 160 }
+			}
+
+			// NOTE: preferredWidth 0 with fillWidth splits the space left by the calendar evenly.
+			Today {
+				Layout.fillWidth: true
+				Layout.fillHeight: true
+				Layout.preferredWidth: 0
+			}
+
+			Calendar {
+				id: calendar
+
+				Layout.alignment: Qt.AlignTop
+			}
+
+			Weather {
+				Layout.fillWidth: true
+				Layout.fillHeight: true
+				Layout.preferredWidth: 0
 			}
 		}
 	}
