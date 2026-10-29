@@ -22,8 +22,8 @@ ShellRoot {
 			anchors.left: true
 			anchors.right: true
 
-			// NOTE: the zone matches the bar height so windows start under the notch.
-			implicitHeight: notch.barHeight
+			// NOTE: the window is tall enough for the drawer, but the zone stays at bar height so windows never move. The mask keeps the empty part click-through.
+			implicitHeight: notch.barHeight + Theme.drawerHeight
 			exclusiveZone: notch.barHeight
 
 			WlrLayershell.namespace: "quickshell-notch"
@@ -59,7 +59,7 @@ ShellRoot {
 				anchors.top: parent.top
 				anchors.horizontalCenter: parent.horizontalCenter
 				width: implicitWidth
-				height: barHeight
+				height: implicitHeight
 				screenWidth: panel.screen.width
 				screenName: panel.screen.name
 			}
