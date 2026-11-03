@@ -24,13 +24,15 @@ My Arch Linux + Hyprland setup: a monochrome GrokNight look, one quickshell notc
 Font: [Maple Mono NF CN](https://github.com/subframe7536/maple-font). Coding agents: Claude Code and Grok Build, both shown in the notch.
 
 ## How to use
-Each top-level folder is a [GNU Stow](https://www.gnu.org/software/stow/) package.
+Configs live in `packages/`. [`install`](./install) links them into your home directory with [GNU Stow](https://www.gnu.org/software/stow/). The clone can sit in any directory. This is the path I use:
 
 ```bash
-git clone --recurse-submodules git@github.com:luxuling/dotfiles.git ~/dotfiles
-cd ~/dotfiles
-stow fastfetch ghostty git gtk helium hypr nvim pi quickshell scripts starship tmux zshrc
+git clone git@github.com:luxuling/dotfiles.git ~/MINE/codes/personal/dotfiles
+cd ~/MINE/codes/personal/dotfiles
+./install
 ```
+
+`./install` is safe to run again. After you move the checkout, run it from the new directory and it relinks home to that location. It will not overwrite a real file. When the Orchis-Grey theme is installed, it also points `~/.config/gtk-4.0/assets` at that theme.
 
 Not in the repo, install them yourself:
 - zsh plugins cloned to `~/.zsh/zsh-autosuggestions` and `~/.zsh/zsh-syntax-highlighting`
