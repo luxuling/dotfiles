@@ -1,25 +1,15 @@
 import QtQuick
 import Quickshell.Io
 import ".."
+import "../time.js" as Time
 
-Rectangle {
+Card {
 	id: root
 
 	property date now: new Date()
 	property int uptimeSeconds: 0
 
 	radius: 12
-	color: Qt.alpha(Theme.white, 0.04)
-
-	function formatUptime(seconds) {
-		const days = Math.floor(seconds / 86400)
-		const hours = Math.floor(seconds % 86400 / 3600)
-		const minutes = Math.floor(seconds % 3600 / 60)
-		if (days > 0)
-			return `${days}d ${hours}h ${minutes}m`
-
-		return `${hours}h ${minutes}m`
-	}
 
 	Timer {
 		interval: 1000
@@ -35,7 +25,7 @@ Rectangle {
 		command: ["cat", "/proc/uptime"]
 		stdout: StdioCollector {
 			waitForEnd: true
-			onStreamFinished: root.uptimeSeconds = Math.floor(parseFloat(text)) || 0
+			onStreamFinished: root.uptimeSeconds = Math.floor(parseFloat(text))
 		}
 	}
 
@@ -76,7 +66,7 @@ Rectangle {
 			horizontalAlignment: Text.AlignHCenter
 			text: Qt.formatDate(root.now, "dddd")
 			font.pixelSize: 13
-			color: Theme.accent
+			color: Theme.ink
 		}
 
 		BarText {
@@ -91,12 +81,21 @@ Rectangle {
 			height: 4
 		}
 
-		BarText {
-			width: parent.width
-			horizontalAlignment: Text.AlignHCenter
-			text: `\u{f051f}  up ${root.formatUptime(root.uptimeSeconds)}`
-			font.pixelSize: 11
-			color: Theme.muted
+		Row {
+			anchors.horizontalCenter: parent.horizontalCenter
+			spacing: 4
+
+			Icon {
+				anchors.verticalCenter: parent.verticalCenter
+				name: "hourglass-01"
+				color: Theme.muted
+			}
+
+			BarText {
+				text: `up ${Time.span(Math.floor(root.uptimeSeconds / 60))}`
+				font.pixelSize: 11
+				color: Theme.muted
+			}
 		}
 	}
 }

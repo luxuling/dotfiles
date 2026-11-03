@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+import json
+import os
+import socket
+import sys
+
+SOCKET_PATH = os.path.join(os.environ["XDG_RUNTIME_DIR"], "quickshell-agents.sock")
+QUESTION_TOOLS = ("AskUserQuestion", "ask_user_question")
+
+
+def is_blocking(event):
+    if event["hook_event_name"] == "PermissionRequest":
+        return True
+
+    # NOTE: grok ignores hook answers to its questions, so its questions only alert.
+    return event["hook_event_name"] == "PreToolUse" and event.get("tool_name") in (*QUESTION_TOOLS, "ExitPlanMode") and not os.environ.get("GROK_SESSION_ID")
+
+
+def count_lines(text):
+    return len((text or "").splitlines())
+
+
+def diff(tool_input):
+    if "content" in tool_input:
+        return [count_lines(tool_input["content"]), 0]
+
+    edits = tool_input.get("edits") or [tool_input]
+    return [sum(count_lines(edit.get("new_string")) for edit in edits), sum(count_lines(edit.get("old_string")) for edit in edits)]
+
+
+def to_message(event):
+    return {
+        "agent": "grok" if os.environ.get("GROK_SESSION_ID") else "claude",
+        "event": event["hook_event_name"],
+        "session": event["session_id"],
+        "cwd": event["cwd"],
+        "pane": os.environ.get("TMUX_PANE", ""),
+        "tool": event.get("tool_name", ""),
+        "input": event.get("tool_input", {}),
+        "type": event.get("notification_type", ""),
+        "message": event.get("message", ""),
+        "prompt": event.get("prompt", "")[:300],
+        "last": (event.get("last_assistant_message") or "")[:600],
+        "transcript": event.get("transcript_path") or "",
+        "diff": diff(event.get("tool_input") or {}),
+        "wait": is_blocking(event),
+    }
+
+
+def to_output(event, reply):
+    tool_input = event.get("tool_input", {})
+
+    if event["hook_event_name"] == "PermissionRequest":
+        decision = {"behavior": reply["decision"]}
+        if reply["decision"] == "deny":
+            decision["message"] = "Denied from the notch"
+
+        return {"hookSpecificOutput": {"hookEventName": "PermissionRequest", "decision": decision}}
+
+    if reply["decision"] == "deny":
+        return {"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": "Plan rejected from the notch, revise it"}}
+
+    if event["tool_name"] in QUESTION_TOOLS:
+        tool_input = {**tool_input, "answers": reply["answers"]}
+
+    return {"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "allow", "updatedInput": tool_input}}
+
+
+def ask_notch(message):
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
+        client.connect(SOCKET_PATH)
+        client.sendall((json.dumps(message) + "\n").encode())
+        if not message["wait"]:
+            return None
+
+        line = client.makefile().readline()
+
+    return json.loads(line) if line else None
+
+
+# NOTE: any failure stays silent with no output, so the agent falls back to its own terminal prompt.
+def main():
+    event = json.load(sys.stdin)
+    message = to_message(event)
+
+    try:
+        reply = ask_notch(message)
+    except OSError:
+        return
+
+    if reply is None or reply["decision"] == "terminal":
+        return
+
+    print(json.dumps(to_output(event, reply)))
+
+
+if __name__ == "__main__":
+    main()

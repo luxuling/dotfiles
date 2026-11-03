@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell.Io
 import ".."
 
-Rectangle {
+Card {
 	id: root
 
 	property bool ready: false
@@ -15,7 +15,19 @@ Rectangle {
 	property string place: ""
 
 	radius: 12
-	color: Qt.alpha(Theme.white, 0.04)
+
+	// NOTE: wttr serves its condition as an emoji, matched here to an icon so the notch stays one icon set.
+	function iconFor(emoji) {
+		const rules = [
+			[/⛈|🌩/, "cloud-lightning"],
+			[/❄|🌨/, "cloud-snowing-01"],
+			[/🌧|🌦/, "cloud-raining-01"],
+			[/🌫/, "cloud-02"],
+			[/⛅/, "cloud-sun-01"],
+			[/☀/, "sun"]
+		]
+		return rules.find(rule => rule[0].test(emoji))?.[1] ?? "cloud-01"
+	}
 
 	// NOTE: location is pinned to Yogyakarta. Fields are pipe separated to keep parsing trivial.
 	Process {
@@ -71,10 +83,9 @@ Rectangle {
 			anchors.horizontalCenter: parent.horizontalCenter
 			spacing: 10
 
-			Text {
+			Icon {
 				anchors.verticalCenter: parent.verticalCenter
-				text: root.icon
-				font.pixelSize: 20
+				name: root.iconFor(root.icon)
 			}
 
 			BarText {
@@ -90,7 +101,7 @@ Rectangle {
 			horizontalAlignment: Text.AlignHCenter
 			text: root.condition
 			font.pixelSize: 13
-			color: Theme.accent
+			color: Theme.ink
 		}
 
 		BarText {
@@ -105,20 +116,55 @@ Rectangle {
 			height: 4
 		}
 
-		BarText {
-			width: parent.width
-			horizontalAlignment: Text.AlignHCenter
-			text: `\u{f058e} ${root.humidity}   \u{f059d} ${root.wind}`
-			font.pixelSize: 11
-			color: Theme.muted
+		Row {
+			anchors.horizontalCenter: parent.horizontalCenter
+			spacing: 4
+
+			Icon {
+				anchors.verticalCenter: parent.verticalCenter
+				name: "droplets-01"
+				color: Theme.muted
+			}
+
+			BarText {
+				text: root.humidity
+				font.pixelSize: 11
+				color: Theme.muted
+			}
+
+			Item {
+				width: 6
+				height: 1
+			}
+
+			Icon {
+				anchors.verticalCenter: parent.verticalCenter
+				name: "wind-01"
+				color: Theme.muted
+			}
+
+			BarText {
+				text: root.wind
+				font.pixelSize: 11
+				color: Theme.muted
+			}
 		}
 
-		BarText {
-			width: parent.width
-			horizontalAlignment: Text.AlignHCenter
-			text: `\u{f034e} ${root.place}`
-			font.pixelSize: 11
-			color: Theme.muted
+		Row {
+			anchors.horizontalCenter: parent.horizontalCenter
+			spacing: 4
+
+			Icon {
+				anchors.verticalCenter: parent.verticalCenter
+				name: "marker-pin-01"
+				color: Theme.muted
+			}
+
+			BarText {
+				text: root.place
+				font.pixelSize: 11
+				color: Theme.muted
+			}
 		}
 	}
 }

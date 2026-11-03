@@ -1,5 +1,5 @@
 vim.lsp.enable({
-	"lua-ls",
+	"lua_ls",
 	"gopls",
 	"ts-ls",
 	"tailwindcss",
@@ -12,4 +12,8 @@ vim.lsp.enable({
 	"docker-language-server",
 	"astro",
 	"marksman",
+	"clangd",
+	"biome",
+	"jsonls",
+  "oxlint"
 })

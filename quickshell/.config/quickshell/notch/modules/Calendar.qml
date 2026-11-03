@@ -31,36 +31,6 @@ Column {
 		return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
 	}
 
-	component NavButton: Item {
-		id: button
-
-		required property string glyph
-		signal clicked
-
-		width: 24
-		height: 24
-
-		HoverFill {
-			anchors.fill: parent
-			shown: area.containsMouse
-		}
-
-		BarText {
-			anchors.centerIn: parent
-			text: button.glyph
-			font.pixelSize: 13
-		}
-
-		MouseArea {
-			id: area
-
-			anchors.fill: parent
-			hoverEnabled: true
-			cursorShape: Qt.PointingHandCursor
-			onClicked: button.clicked()
-		}
-	}
-
 	WheelHandler {
 		onWheel: event => root.shift(event.angleDelta.y > 0 ? -1 : 1)
 	}
@@ -71,17 +41,33 @@ Column {
 
 		NavButton {
 			anchors.left: parent.left
-			glyph: "‹"
+			icon: "chevron-left"
 			onClicked: root.shift(-1)
 		}
 
-		BarText {
+		Item {
 			anchors.centerIn: parent
-			text: Qt.formatDate(new Date(root.year, root.month, 1), "MMM yyyy")
-			font.pixelSize: 12
+			width: title.implicitWidth + 16
+			height: parent.height
+
+			HoverFill {
+				width: parent.width
+				shown: titleArea.containsMouse
+			}
+
+			BarText {
+				id: title
+
+				anchors.centerIn: parent
+				text: Qt.formatDate(new Date(root.year, root.month, 1), "MMM yyyy")
+				font.pixelSize: 12
+			}
 
 			MouseArea {
+				id: titleArea
+
 				anchors.fill: parent
+				hoverEnabled: true
 				cursorShape: Qt.PointingHandCursor
 				onClicked: root.reset()
 			}
@@ -89,7 +75,7 @@ Column {
 
 		NavButton {
 			anchors.right: parent.right
-			glyph: "›"
+			icon: "chevron-right"
 			onClicked: root.shift(1)
 		}
 	}
@@ -136,16 +122,16 @@ Column {
 				width: 20
 				height: 20
 				radius: 10
-				color: day.model.today ? Theme.accent : (dayArea.containsMouse ? Theme.idle : "transparent")
+				color: day.model.today ? Theme.ink : (dayArea.containsMouse ? Qt.alpha(Theme.ink, 0.08) : "transparent")
 				border.width: day.isSelected && !day.model.today ? 1 : 0
-				border.color: Theme.accent
+				border.color: Theme.ink
 			}
 
 			BarText {
 				anchors.centerIn: parent
 				text: day.model.day
 				font.pixelSize: 11
-				color: day.model.today ? Theme.crust : (day.inMonth ? Theme.text : Theme.muted)
+				color: day.model.today ? Theme.crust : (day.inMonth ? Theme.ink : Theme.muted)
 			}
 
 			// NOTE: MonthGrid emits clicked itself; this area only drives the hover tint.

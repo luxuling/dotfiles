@@ -1,5 +1,14 @@
 local keymap = vim.keymap
 
+vim.api.nvim_create_user_command("LspStatus", function()
+	local clients = vim.lsp.get_clients({ bufnr = 0 })
+	local names = {}
+	for _, client in ipairs(clients) do
+		names[#names + 1] = client.name
+	end
+	vim.notify(#names > 0 and "LSP active: " .. table.concat(names, ", ") or "No LSP attached to this buffer")
+end, { desc = "Show LSP clients attached to the current buffer" })
+
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 	callback = function(ev)
