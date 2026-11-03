@@ -1,0 +1,4 @@
+/* HACK: GTK 4.24 publishes an empty blur region, so Hyprland skips its own blur */
+window {
+  backdrop-filter: blur(20px);
+}

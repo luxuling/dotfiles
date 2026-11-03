@@ -17,11 +17,12 @@ local mainMod = "ALT"
 
 local terminal = "ghostty"
 local fileManager = "thunar"
-local menu = "walker"
+local notch = "qs -c notch"
+local menu = notch .. " ipc call apps toggle"
 local screenshot = "hyprshot -m region -o /home/lixuling/Pictures/Screenshots/"
 local lockscreen = "hyprlock"
 local screenRecord = "$HOME/.config/scripts/mf-recording.sh"
-local walkerRepos = "$HOME/.config/scripts/walker-repos.sh"
+local projectPicker = notch .. " ipc call projects toggle"
 
 ----------------------------------------------------------------
 -- AUTOSTART
@@ -29,18 +30,16 @@ local walkerRepos = "$HOME/.config/scripts/walker-repos.sh"
 
 hl.on("hyprland.start", function()
 	hl.exec_cmd("hyprpaper")
-	hl.exec_cmd("swaync")
-	hl.exec_cmd("qs -p /home/lixuling/dotfiles/quickshell/.config/quickshell/notch --no-duplicate")
-	hl.exec_cmd("elephant")
-	hl.exec_cmd("walker --gapplication-service")
+	hl.exec_cmd(notch .. " --no-duplicate")
 end)
 
 ----------------------------------------------------------------
 -- ENVIRONMENT VARIABLES
 ----------------------------------------------------------------
 
-hl.env("XCURSOR_SIZE", "24")
-hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("XCURSOR_THEME", "retrosmart-xcursor-mac-ish-white")
+hl.env("XCURSOR_SIZE", "33")
+hl.env("HYPRCURSOR_SIZE", "33")
 
 ----------------------------------------------------------------
 -- LOOK AND FEEL
@@ -49,7 +48,8 @@ hl.env("HYPRCURSOR_SIZE", "24")
 hl.config({
 	general = {
 		gaps_in = 5,
-		gaps_out = 20,
+		-- matches the 10px between tiled windows (gaps_in on both sides), the notch's zone covers the rest of the top
+		gaps_out = 10,
 
 		border_size = 1,
 
@@ -82,7 +82,6 @@ hl.config({
 		-- BLUR
 		-- Blur hanya terlihat kalau permukaan di atasnya transparan.
 		-- Untuk window: atur transparansi di aplikasinya (mis. ghostty background-opacity).
-		-- Untuk layer (waybar, walker, swaync): lihat layer_rule di bagian bawah.
 		blur = {
 			enabled = true,
 			size = 8,
@@ -101,6 +100,13 @@ hl.config({
 	misc = {
 		force_default_wallpaper = -1, -- 0 atau 1 untuk mematikan wallpaper maskot anime
 		disable_hyprland_logo = false, -- true untuk mematikan logo / background Hyprland
+		-- render_unfocused windows (Helium) keep video smooth on hidden workspaces, default is 15
+		render_unfocused_fps = 60,
+	},
+
+	-- 1 = ignore_unfocused: hidden render_unfocused windows are not fifo locked, so Chromium keeps presenting
+	render = {
+		not_shown_fifo_lock = 1,
 	},
 })
 
@@ -186,11 +192,11 @@ hl.bind(mainMod .. " + SHIFT + J", hl.dsp.layout("togglesplit")) -- dwindle (dul
 hl.bind("Print", hl.dsp.exec_cmd(screenshot))
 hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd(lockscreen))
 hl.bind(mainMod .. " + CTRL + R", hl.dsp.exec_cmd(screenRecord))
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(walkerRepos))
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(projectPicker))
 
 -- Restart utils
-hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("pkill -x qs; pkill hyprpaper; qs -p /home/lixuling/dotfiles/quickshell/.config/quickshell/notch & hyprpaper &"))
-hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("qs -p /home/lixuling/dotfiles/quickshell/.config/quickshell/notch --no-duplicate"))
+hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("pkill -x qs; pkill hyprpaper; " .. notch .. " & hyprpaper &"))
+hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd(notch .. " --no-duplicate"))
 
 -- Pindah fokus: mainMod + h,j,k,l
 hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }))
@@ -273,8 +279,18 @@ hl.window_rule({
 
 hl.window_rule({
 	name = "helium",
-	match = { class = "helium" },
+	match = {
+		class = "^helium$",
+		initial_title = ".* - Helium$",
+	},
 	workspace = "3 silent",
+})
+
+-- PiP draws from the opener tab, so Helium has to keep rendering while its workspace is hidden.
+hl.window_rule({
+	name = "helium-render-unfocused",
+	match = { class = "^helium$" },
+	render_unfocused = true,
 })
 
 hl.window_rule({
@@ -304,9 +320,21 @@ hl.window_rule({
 	move = { "monitor_w - 576 - 22", "22" },
 })
 
+-- Document PiP uses the page title and leaves off " - Helium".
+-- Video PiP is titled "Picture in picture".
 hl.window_rule({
 	name = "helium-pip",
-	match = { initial_title = "Picture in picture" },
+	match = {
+		class = "^helium$",
+		initial_title = "negative:(.* - Helium$|.*[Dd]ev[Tt]ools.*)",
+	},
+	float = true,
+	pin = true,
+})
+
+hl.window_rule({
+	name = "helium-pip-video",
+	match = { initial_title = "^[Pp]icture[- ]in[- ][Pp]icture$" },
 	float = true,
 	pin = true,
 	size = "576 324",
@@ -341,25 +369,3 @@ hl.window_rule({
 --     match   = { class = "com.mitchellh.ghostty" },
 --     opacity = "0.9 0.8",   -- aktif / tidak aktif
 -- })
-
-----------------------------------------------------------------
--- LAYER RULES (blur untuk bar, launcher, notifikasi)
--- Cek namespace dengan: hyprctl layers
--- Catatan: namespace adalah RegEx, gunakan "a|b" untuk beberapa namespace.
--- ignore_alpha: piksel dengan alpha <= nilai ini TIDAK di-blur.
--- Pastikan alpha background di CSS (walker/swaync) LEBIH TINGGI dari ini.
-----------------------------------------------------------------
-
-hl.layer_rule({
-	name = "walker",
-	match = { namespace = "walker" },
-	blur = true,
-	ignore_alpha = 0.3,
-})
-
-hl.layer_rule({
-	name = "swaync",
-	match = { namespace = "swaync-control-center|swaync-notification-window" },
-	blur = true,
-	ignore_alpha = 0.3,
-})

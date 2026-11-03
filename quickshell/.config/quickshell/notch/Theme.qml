@@ -2,27 +2,29 @@ pragma Singleton
 import QtQuick
 
 QtObject {
-	// GrokNight from grok-build theme/groknight.rs. Gray base, TokyoNight accents.
-	readonly property color crust: "#141414" // BG_STORM, bg_base
-	readonly property color text: "#e1e1e1" // FG, text_primary
-	readonly property color ink: "#e1e1e1" // FG
-	readonly property color accent: "#7aa2f7" // BLUE
-	readonly property color muted: "#6c6c6c" // COMMENT
-	readonly property color idle: "#363636" // bg_visual
-	readonly property color gutter: "#414141" // FG_GUTTER
-	readonly property color red: "#f7768e" // RED, urgent only
-	readonly property color white: "#e1e1e1"
+	// NOTE: GrokNight grays only, the notch stays monochrome. The one hue is Claude's logo.
+	readonly property color crust: "#141414"
+	readonly property color idle: "#363636"
+	readonly property color gutter: "#414141"
+	readonly property color muted: "#6c6c6c"
+	readonly property color soft: "#bdbdbd"
+	readonly property color ink: "#e1e1e1"
+	readonly property color bright: "#ffffff"
+	readonly property color claude: "#d97757"
 
 	readonly property string fontFamily: "Maple Mono NF CN"
 	readonly property int fontSize: 15
 	readonly property int clockSize: 16
 
-	readonly property int foldedHeight: 46
-	readonly property int wingHeight: 46
-	readonly property int sidePad: 28
+	// NOTE: 34 is the 26px hover fill plus 4px each side, going lower clips the hover fills.
+	readonly property int foldedHeight: 34
+	readonly property int wingHeight: 34
+	readonly property int sidePad: 16
 	readonly property int melt: 14
-	readonly property int bottomRadius: 18
+	readonly property int bottomRadius: 14
 	readonly property int gap: 14
 	readonly property int innerGap: 8
+	readonly property int hoverSize: 26
+	readonly property int iconSize: 16
 	readonly property int drawerHeight: 200
 }

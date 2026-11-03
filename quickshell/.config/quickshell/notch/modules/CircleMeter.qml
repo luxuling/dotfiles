@@ -6,7 +6,7 @@ Item {
 	id: root
 
 	required property real fraction
-	required property string glyph
+	required property string icon
 	property color mark: Theme.ink
 
 	implicitWidth: 20
@@ -49,10 +49,10 @@ Item {
 		}
 	}
 
-	BarText {
+	Icon {
 		anchors.centerIn: parent
-		font.pixelSize: 9
-		text: root.glyph
+		name: root.icon
+		size: 10
 		color: root.mark
 	}
 }

@@ -6,7 +6,7 @@ import ".."
 Row {
 	id: root
 
-	spacing: 8
+	spacing: 0
 
 	Repeater {
 		model: SystemTray.items
@@ -16,8 +16,13 @@ Row {
 
 			required property var modelData
 
-			implicitWidth: 16
+			// NOTE: the slot is as wide as the hover circle, the notch clips anything past the last icon.
+			implicitWidth: Theme.hoverSize
 			implicitHeight: Theme.wingHeight
+
+			HoverFill {
+				shown: mouse.containsMouse
+			}
 
 			Image {
 				anchors.centerIn: parent
@@ -38,6 +43,8 @@ Row {
 			}
 
 			MouseArea {
+				id: mouse
+
 				anchors.fill: parent
 				hoverEnabled: true
 				cursorShape: Qt.PointingHandCursor

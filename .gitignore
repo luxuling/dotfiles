@@ -1,0 +1,12 @@
+# never track secrets
+*.secrets.zsh
+.secrets.zsh
+secrets.env
+**/opencode.json
+
+# pi: never track credentials/sessions
+pi/.pi/agent/auth.json
+pi/.pi/agent/sessions/
+
+# local wallpaper, read by hyprpaper and hyprlock
+hypr/.config/hypr/wallpaper.jpg

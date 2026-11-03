@@ -15,20 +15,18 @@ Item {
 	}
 	readonly property bool muted: audio !== null && audio.muted
 	readonly property real level: audio === null || muted ? 0 : Math.max(0, Math.min(1, audio.volume))
+	readonly property bool hovered: mouse.containsMouse
 	implicitWidth: 22
 	implicitHeight: Theme.wingHeight
 
 	HoverFill {
-		anchors.fill: parent
-		anchors.topMargin: 8
-		anchors.bottomMargin: 8
 		shown: mouse.containsMouse
 	}
 
 	CircleMeter {
 		anchors.centerIn: parent
 		fraction: root.level
-		glyph: root.muted ? "" : root.level < 0.3 ? "" : root.level < 0.7 ? "" : ""
+		icon: root.muted ? "volume-x" : root.level < 0.5 ? "volume-min" : "volume-max"
 		mark: root.muted ? Theme.muted : Theme.ink
 	}
 
@@ -38,7 +36,10 @@ Item {
 		anchors.fill: parent
 		hoverEnabled: true
 		cursorShape: Qt.PointingHandCursor
-		onClicked: Quickshell.execDetached(["pavucontrol"])
+		onClicked: {
+			if (root.audio !== null)
+				root.audio.muted = !root.audio.muted
+		}
 		onWheel: event => {
 			if (root.audio === null)
 				return

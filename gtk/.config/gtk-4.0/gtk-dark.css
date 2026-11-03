@@ -1,0 +1,13 @@
+@import url("file:///usr/share/themes/Orchis-Grey/gtk-4.0/gtk-dark.css");
+
+/* Ghostty's window carries the "window" style class. Orchis paints that
+   window opaque, so Hyprland never sees the transparent pixels it blurs. */
+window.window,
+window.window.background,
+window.window > contents,
+window.window tabview > stack,
+window.window toolbarview,
+window.window .content-pane,
+window.window .view {
+  background-color: transparent;
+}

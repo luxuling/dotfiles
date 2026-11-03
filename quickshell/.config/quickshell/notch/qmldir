@@ -1,3 +1,10 @@
 singleton Theme 1.0 Theme.qml
 NotchBar 1.0 NotchBar.qml
 NotchShape 1.0 NotchShape.qml
+singleton Notifs 1.0 Notifs.qml
+singleton Reminders 1.0 Reminders.qml
+singleton Agents 1.0 Agents.qml
+singleton Usage 1.0 Usage.qml
+ProjectPicker 1.0 ProjectPicker.qml
+Picker 1.0 Picker.qml
+AppLauncher 1.0 AppLauncher.qml

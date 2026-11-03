@@ -5,26 +5,20 @@ import ".."
 Item {
 	id: root
 
-	required property string glyph
+	required property string icon
 	required property var command
-	property color mark: Theme.ink
 
-	implicitWidth: glyphText.implicitWidth + 12
+	implicitWidth: 28
 	implicitHeight: Theme.wingHeight
 
 	HoverFill {
-		anchors.fill: parent
-		anchors.topMargin: 10
-		anchors.bottomMargin: 10
 		shown: mouse.containsMouse
 	}
 
-	BarText {
-		id: glyphText
-
+	Icon {
 		anchors.centerIn: parent
-		text: root.glyph
-		color: root.mark
+		name: root.icon
+		color: Theme.ink
 	}
 
 	MouseArea {

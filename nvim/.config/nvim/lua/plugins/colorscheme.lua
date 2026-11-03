@@ -1,21 +1,23 @@
 return {
-	"olimorris/onedarkpro.nvim",
-	priority = 1000,
-	lazy = false,
+	"projekt0n/github-nvim-theme",
+	name = "github-theme",
+	lazy = false, -- make sure we load this during startup if it is your main colorscheme
+	priority = 1000, -- make sure to load this before all the other start plugins
 	config = function()
-		require("onedarkpro").setup({
+		require("github-theme").setup({
 			options = {
-				terminal_colors = false,
-				cursorline = true,
-			},
-			highlights = {
-				Comment = { fg = "#4DFFBE", italic = true },
+				compile_path = vim.fn.stdpath("cache") .. "/github-theme",
+				compile_file_suffix = "_compiled",
+				hide_end_of_buffer = true,
+				hide_nc_statusline = true,
+				transparent = true,
+				terminal_colors = true,
+				dim_inactive = false,
+				module_default = true,
 			},
 		})
-		vim.cmd("colorscheme vaporwave")
-		vim.api.nvim_set_hl(0, "Visual", {
-			bg = "#f4dbd6",
-			blend = 0,
-		})
+
+		-- Must be called AFTER setup()
+		vim.cmd("colorscheme github_dark") -- or whatever variant you use
 	end,
 }

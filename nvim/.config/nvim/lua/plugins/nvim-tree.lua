@@ -9,10 +9,16 @@ return {
 				},
 			},
 			sort = {
-				sorter = "case_sensitive",
+				sorter = function(nodes)
+					table.sort(nodes, function(a, b)
+						local a_rank = a.type == "directory" and 0 or (a.name:match("_test%.go$") and 2 or 1)
+						local b_rank = b.type == "directory" and 0 or (b.name:match("_test%.go$") and 2 or 1)
+						return a_rank == b_rank and a.name < b.name or a_rank < b_rank
+					end)
+				end,
 			},
 			view = {
-				width = 30,
+				width = 40,
 				relativenumber = false,
 				side = "left",
 			},
