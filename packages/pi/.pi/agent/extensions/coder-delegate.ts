@@ -171,7 +171,7 @@ function sendToPane(paneId: string, text: string) {
 function coderMessage(handoffPath: string, task: string): string {
   return (
     `Read ${handoffPath} first for the full planning context. ` +
-    "Read the code-standards skill (/home/lixuling/.agents/skills/code-standards/SKILL.md) before writing anything and follow it for every file you write or edit, even small edits. " +
+    "Read the code-standards skill (~/.agents/skills/code-standards/SKILL.md) before writing anything and follow it for every file you write or edit, even small edits. " +
     `Then: ${task}`
   );
 }

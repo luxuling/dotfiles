@@ -1,0 +1,119 @@
+#!/bin/sh
+set -eu
+
+repo=$(CDPATH= cd -- "$(dirname "$0")" && pwd -P)
+pkg_dir=$repo/packages
+
+if ! command -v stow >/dev/null 2>&1; then
+	echo "stow is required: pacman -S stow" >&2
+	exit 1
+fi
+
+if [ ! -d "$pkg_dir" ]; then
+	echo "missing packages directory: $pkg_dir" >&2
+	exit 1
+fi
+
+# NOTE: Stow only deletes links that point into this checkout. A moved repo
+# leaves relative links through the old dotfiles path, so those are removed first.
+drop_stale() {
+	local target=$1
+	local source=$2
+	local current wanted link
+
+	if [ ! -e "$target" ] && [ ! -L "$target" ]; then
+		return
+	fi
+
+	if [ -L "$target" ]; then
+		current=$(readlink -f "$target" 2>/dev/null || true)
+		wanted=$(readlink -f "$source" 2>/dev/null || true)
+
+		if [ -n "$current" ] && [ "$current" = "$wanted" ]; then
+			return
+		fi
+
+		link=$(readlink "$target")
+		case $link in
+			*dotfiles/*)
+				rm "$target"
+				return
+				;;
+		esac
+
+		echo "refusing to replace $target -> $link" >&2
+		exit 1
+	fi
+
+	if [ -d "$target" ]; then
+		return
+	fi
+
+	echo "refusing to replace real file $target" >&2
+	exit 1
+}
+
+walk() {
+	local source=$1
+	local rel=$2
+	local child name
+
+	if [ -n "$rel" ]; then
+		drop_stale "$HOME/$rel" "$source"
+
+		if [ -L "$source" ] || [ -L "$HOME/$rel" ]; then
+			return
+		fi
+	fi
+
+	if [ ! -d "$source" ]; then
+		return
+	fi
+
+	for child in "$source"/* "$source"/.[!.]* "$source"/..?*; do
+		if [ ! -e "$child" ] && [ ! -L "$child" ]; then
+			continue
+		fi
+
+		name=$(basename "$child")
+		if [ -n "$rel" ]; then
+			walk "$child" "$rel/$name"
+		else
+			walk "$child" "$name"
+		fi
+	done
+}
+
+set --
+for dir in "$pkg_dir"/*/; do
+	if [ ! -d "$dir" ]; then
+		continue
+	fi
+
+	dir=${dir%/}
+	walk "$dir" ""
+	set -- "$@" "$(basename "$dir")"
+done
+
+if [ "$#" -eq 0 ]; then
+	echo "no packages in $pkg_dir" >&2
+	exit 1
+fi
+
+stow -R -d "$pkg_dir" -t "$HOME" "$@"
+
+# NOTE: Stow refuses absolute symlinks, and a relative one breaks when the repo moves.
+theme=/usr/share/themes/Orchis-Grey/gtk-4.0/assets
+assets=$HOME/.config/gtk-4.0/assets
+if [ -d "$theme" ]; then
+	if [ -L "$assets" ]; then
+		link=$(readlink "$assets")
+		case $link in
+			*dotfiles/*|*Orchis-Grey*) ln -sfn "$theme" "$assets" ;;
+		esac
+	elif [ ! -e "$assets" ]; then
+		ln -s "$theme" "$assets"
+	fi
+fi
+
+echo "linked $# packages into $HOME"

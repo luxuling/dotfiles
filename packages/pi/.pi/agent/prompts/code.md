@@ -4,7 +4,7 @@ argument-hint: "[plan or task description]"
 ---
 Implement — don't re-litigate the design. Task: ${@:-the plan or task described in the conversation so far}
 
-1. Read the code-standards skill (/home/lixuling/.agents/skills/code-standards/SKILL.md) before writing anything, and follow it for every file you write or edit — even small edits, even when the task never mentions style.
+1. Read the code-standards skill (~/.agents/skills/code-standards/SKILL.md) before writing anything, and follow it for every file you write or edit — even small edits, even when the task never mentions style.
 2. Read the relevant existing code and match its style, conventions, and libraries.
 3. Implement completely — no TODOs or stubs unless explicitly scoped out.
 4. Batch related edits, then build/compile and run relevant tests (write them if none exist and the change warrants it). Fix failures before finishing.

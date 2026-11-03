@@ -7,7 +7,7 @@ SAVEHIST=1000
 bindkey -e
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
-zstyle :compinstall filename '/home/lixuling/.zshrc'
+zstyle :compinstall filename "$HOME/.zshrc"
 alias vim="nvim"
 alias notes="nvim ~/MINE/notes"
 alias coding="~/.config/scripts/coding"
@@ -22,7 +22,7 @@ compinit
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 export PATH="$PATH:/var/lib/snapd/snap/bin"
-export PATH="$PATH:/home/lixuling/.cargo/bin"
+export PATH="$PATH:$HOME/.cargo/bin"
 export EDITOR="nvim"
 
 . "$HOME/.local/bin/env"
@@ -32,13 +32,13 @@ eval "$(uv generate-shell-completion zsh)"
 [ -f "$HOME/.secrets.zsh" ] && source "$HOME/.secrets.zsh"
 
 # opencode
-export PATH=/home/lixuling/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"
 
 # bun
-export PATH="/home/lixuling/.bun/bin:$PATH"
+export PATH="$HOME/.bun/bin:$PATH"
 
 # pnpm
-export PNPM_HOME="/home/lixuling/.local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -47,10 +47,10 @@ esac
 
 
 # Pi
-export PATH="/home/lixuling/.local/share/pi-node/node-v22.23.2-linux-x64/bin:$PATH"
+export PATH="$HOME/.local/share/pi-node/node-v22.23.2-linux-x64/bin:$PATH"
 
 # bun completions
-[ -s "/home/lixuling/.bun/_bun" ] && source "/home/lixuling/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # Multiple Claude Code accounts (isolated via CLAUDE_CONFIG_DIR)
 alias claude-personal="claude"
