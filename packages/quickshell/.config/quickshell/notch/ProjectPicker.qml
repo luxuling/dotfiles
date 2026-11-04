@@ -20,7 +20,7 @@ Picker {
 	}
 
 	title: category === "" ? "codes" : `codes  ›  ${category}`
-	hint: "j/k move  ·  l open  ·  h back  ·  / filter  ·  q close"
+	hint: "ctrl+j/k move  ·  enter open  ·  backspace back  ·  esc close"
 	namespace: "quickshell-projects"
 
 	onOpenChanged: {
