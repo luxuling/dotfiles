@@ -4,7 +4,7 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import "modules"
 
-// NOTE: the centered vim picker behind the app launcher and project picker, items are { label, icon | iconPath, search?, chevron?, badge? }.
+// NOTE: the centered search picker behind the app launcher and project picker, items are { label, icon | iconPath, search?, chevron?, badge? }.
 Scope {
 	id: root
 
@@ -20,7 +20,7 @@ Scope {
 
 	signal picked(var item)
 	signal back
-	// NOTE: any other plain key in normal mode, so a user can add its own bindings like "p" to pin.
+	// NOTE: search-field chords the picker does not use itself, such as "C-p" to pin.
 	signal key(string text, var item)
 
 	onOpenChanged: {
@@ -28,7 +28,7 @@ Scope {
 		root.restore = ""
 	}
 
-	// NOTE: the window is rebuilt on every open, so the selection and modes always start fresh.
+	// NOTE: the window is rebuilt on every open, so the selection and query start fresh.
 	LazyLoader {
 		active: root.open
 
@@ -45,17 +45,8 @@ Scope {
 			WlrLayershell.layer: WlrLayer.Overlay
 			WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
-			MouseArea {
-				anchors.fill: parent
-				onClicked: root.open = false
-			}
-
 			Rectangle {
 				id: box
-
-				// NOTE: opens in search mode, esc drops to the vim keys.
-				property bool filtering: true
-				property bool pendingG: false
 
 				function move(delta) {
 					list.currentIndex = Math.max(0, Math.min(list.count - 1, list.currentIndex + delta))
@@ -67,30 +58,11 @@ Scope {
 						root.picked(item)
 				}
 
-				function dismiss() {
-					if (root.query !== "") {
-						root.query = ""
-						return
-					}
-
-					root.open = false
-				}
-
-				function stopFiltering() {
-					box.filtering = false
-					list.forceActiveFocus()
-				}
-
 				anchors.centerIn: parent
 				width: 520
 				height: 360
 				radius: 18
 				color: Theme.crust
-
-				// NOTE: swallows clicks so only the backdrop closes the picker.
-				MouseArea {
-					anchors.fill: parent
-				}
 
 				Connections {
 					target: root
@@ -139,9 +111,8 @@ Scope {
 					anchors.right: parent.right
 					anchors.leftMargin: 16
 					anchors.rightMargin: 16
-					anchors.topMargin: visible ? 8 : 0
-					height: visible ? 24 : 0
-					visible: box.filtering || root.query !== ""
+					anchors.topMargin: 8
+					height: 24
 
 					BarText {
 						id: slash
@@ -168,14 +139,34 @@ Scope {
 						onTextChanged: root.query = text
 						onAccepted: box.forward()
 						Component.onCompleted: forceActiveFocus()
-						Keys.onEscapePressed: {
-							root.query = ""
-							box.stopFiltering()
+						Keys.priority: Keys.BeforeItem
+						Keys.onEscapePressed: root.open = false
+						Keys.onDownPressed: event => {
+							box.move(1)
+							event.accepted = true
 						}
-						Keys.onDownPressed: box.move(1)
-						Keys.onUpPressed: box.move(-1)
-						// NOTE: backspace on an empty query walks back up, like h in normal mode.
+						Keys.onUpPressed: event => {
+							box.move(-1)
+							event.accepted = true
+						}
+						// NOTE: backspace on an empty query walks back to the category list.
 						Keys.onPressed: event => {
+							if (event.modifiers & Qt.ControlModifier) {
+								if (event.key === Qt.Key_J)
+									box.move(1)
+								else if (event.key === Qt.Key_K)
+									box.move(-1)
+								else if (event.key === Qt.Key_P)
+									root.key("C-p", root.shown[list.currentIndex])
+								else if (event.key === Qt.Key_N)
+									root.key("C-n", root.shown[list.currentIndex])
+								else
+									return
+
+								event.accepted = true
+								return
+							}
+
 							if (event.key === Qt.Key_Backspace && text === "") {
 								root.back()
 								event.accepted = true
@@ -194,7 +185,7 @@ Scope {
 					anchors.margins: 8
 					anchors.topMargin: 8
 					clip: true
-					focus: true
+					interactive: false
 					model: root.shown
 					spacing: 4
 					boundsBehavior: Flickable.StopAtBounds
@@ -202,48 +193,6 @@ Scope {
 
 					// NOTE: rows are drawer cards like the reminder list, so the current one keeps in view by hand.
 					onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
-
-					// NOTE: letters are read from event.text so "G" and "g" differ, Ctrl chords use the key code.
-					Keys.onPressed: event => {
-						const pendingG = box.pendingG
-						box.pendingG = false
-						const half = Math.max(1, Math.floor(list.height / 34 / 2))
-
-						if (event.modifiers & Qt.ControlModifier) {
-							if (event.key === Qt.Key_D)
-								box.move(half)
-							else if (event.key === Qt.Key_U)
-								box.move(-half)
-							else
-								return
-						} else if (event.text === "j" || event.key === Qt.Key_Down) {
-							box.move(1)
-						} else if (event.text === "k" || event.key === Qt.Key_Up) {
-							box.move(-1)
-						} else if (event.text === "G") {
-							list.currentIndex = list.count - 1
-						} else if (event.text === "g") {
-							if (pendingG)
-								list.currentIndex = 0
-							else
-								box.pendingG = true
-						} else if (event.text === "l" || event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Right) {
-							box.forward()
-						} else if (event.text === "h" || event.key === Qt.Key_Left || event.key === Qt.Key_Backspace) {
-							root.back()
-						} else if (event.text === "/") {
-							box.filtering = true
-							filterInput.forceActiveFocus()
-						} else if (event.text === "q" || event.key === Qt.Key_Escape) {
-							box.dismiss()
-						} else if (event.text !== "") {
-							root.key(event.text, root.shown[list.currentIndex])
-						} else {
-							return
-						}
-
-						event.accepted = true
-					}
 
 					// NOTE: same cards as the notch drawers, the current row is the brighter one.
 					delegate: Card {
@@ -317,17 +266,6 @@ Scope {
 							size: 14
 							color: Theme.muted
 						}
-
-						MouseArea {
-							anchors.fill: parent
-							hoverEnabled: true
-							cursorShape: Qt.PointingHandCursor
-							onEntered: list.currentIndex = row.index
-							onClicked: {
-								list.currentIndex = row.index
-								box.forward()
-							}
-						}
 					}
 				}
 
@@ -342,12 +280,27 @@ Scope {
 				BarText {
 					id: footer
 
+					anchors.left: parent.left
+					anchors.right: parent.right
 					anchors.bottom: parent.bottom
-					anchors.horizontalCenter: parent.horizontalCenter
+					anchors.leftMargin: 16
+					anchors.rightMargin: 16
 					anchors.bottomMargin: 12
-					text: box.filtering ? "enter open  ·  esc normal mode" : root.hint
+					horizontalAlignment: Text.AlignHCenter
+					text: root.hint
 					font.pixelSize: 11
 					color: Theme.muted
+				}
+			}
+
+			// NOTE: keyboard only. This stays on top so the pointer cannot move the selection, open a row, or fall through and steal the grab.
+			MouseArea {
+				anchors.fill: parent
+				hoverEnabled: true
+				acceptedButtons: Qt.AllButtons
+
+				WheelHandler {
+					onWheel: event => event.accepted = true
 				}
 			}
 		}

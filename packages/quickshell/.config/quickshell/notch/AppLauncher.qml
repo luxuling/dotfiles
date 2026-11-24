@@ -23,7 +23,7 @@ Picker {
 	}
 
 	title: "apps"
-	hint: "j/k move  ·  l open  ·  p pin  ·  / filter  ·  q close"
+	hint: "ctrl+j/k move  ·  enter open  ·  ctrl+p pin  ·  esc close"
 	namespace: "quickshell-apps"
 	items: [
 		...root.pinned.map(id => root.apps.find(entry => entry.id === id)).filter(entry => entry !== undefined),
@@ -42,7 +42,7 @@ Picker {
 	}
 
 	onKey: (text, item) => {
-		if (text === "p")
+		if (text === "C-p")
 			root.togglePin(item)
 	}
 

@@ -1,7 +1,8 @@
 # DO NOT EDIT! This file will be overwritten by nwg-look.
 # Any customization should be done in ~/.gtkrc-2.0.mine instead.
 
-include "/home/lixuling/.gtkrc-2.0.mine"
+# NOTE: install fills in the home path. GTK does not expand ~ in an include.
+include "__HOME__/.gtkrc-2.0.mine"
 gtk-theme-name="Orchis-Grey"
 gtk-icon-theme-name="WhiteSur-dark"
 gtk-font-name="Maple Mono NF CN 11"

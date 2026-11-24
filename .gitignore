@@ -4,9 +4,5 @@
 secrets.env
 **/opencode.json
 
-# pi: never track credentials/sessions
-packages/pi/.pi/agent/auth.json
-packages/pi/.pi/agent/sessions/
-
-# local wallpaper, read by hyprpaper and hyprlock
-packages/hypr/.config/hypr/wallpaper.jpg
+# local wallpaper, not part of the shared set
+packages/wallpapers/.local/share/wallpapers/personal.jpg
