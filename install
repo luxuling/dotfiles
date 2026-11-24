@@ -1,7 +1,45 @@
 #!/bin/sh
 set -eu
 
-repo=$(CDPATH= cd -- "$(dirname "$0")" && pwd -P)
+# NOTE: $0 is just "install" when it is started from PATH, and a symlink's
+# directory is not the checkout.
+resolve_repo() {
+	local script=$0
+	local old_ifs link dir
+
+	case $script in
+		*/*) ;;
+		*)
+			# NOTE: `sh install` reads ./install, but PATH also has coreutils install.
+			if [ -f "$script" ]; then
+				script=./$script
+			else
+				old_ifs=$IFS
+				IFS=:
+				for dir in $PATH; do
+					if [ -x "$dir/$script" ]; then
+						script=$dir/$script
+						break
+					fi
+				done
+				IFS=$old_ifs
+			fi
+			;;
+	esac
+
+	while [ -L "$script" ]; do
+		link=$(readlink "$script")
+		dir=$(CDPATH= cd -- "$(dirname "$script")" && pwd)
+		case $link in
+			/*) script=$link ;;
+			*) script=$dir/$link ;;
+		esac
+	done
+
+	CDPATH= cd -- "$(dirname "$script")" && pwd -P
+}
+
+repo=$(resolve_repo)
 pkg_dir=$repo/packages
 
 if ! command -v stow >/dev/null 2>&1; then
@@ -9,13 +47,39 @@ if ! command -v stow >/dev/null 2>&1; then
 	exit 1
 fi
 
+# NOTE: piped from curl, $0 is the shell and there is no checkout. The links need
+# one that stays on disk, so clone it and rerun from there.
 if [ ! -d "$pkg_dir" ]; then
-	echo "missing packages directory: $pkg_dir" >&2
-	exit 1
+	dest=${DOTFILES:-$HOME/dotfiles}
+
+	if [ ! -d "$dest/packages" ]; then
+		if ! command -v git >/dev/null 2>&1; then
+			echo "git is required: pacman -S git" >&2
+			exit 1
+		fi
+
+		git clone https://github.com/luxuling/dotfiles.git "$dest"
+	fi
+
+	exec sh "$dest/install"
 fi
 
-# NOTE: Stow only deletes links that point into this checkout. A moved repo
-# leaves relative links through the old dotfiles path, so those are removed first.
+# NOTE: Stow will not replace a link into a different checkout. The clone
+# directory can have any name, so match the packages/ suffix instead.
+owned_link() {
+	local link=$1
+	local source=$2
+	local suffix=${source#"$pkg_dir/"}
+
+	case $link in
+		*/packages/"$suffix" | packages/"$suffix")
+			return 0
+			;;
+	esac
+
+	return 1
+}
+
 drop_stale() {
 	local target=$1
 	local source=$2
@@ -34,12 +98,10 @@ drop_stale() {
 		fi
 
 		link=$(readlink "$target")
-		case $link in
-			*dotfiles/*)
-				rm "$target"
-				return
-				;;
-		esac
+		if owned_link "$link" "$source"; then
+			rm "$target"
+			return
+		fi
 
 		echo "refusing to replace $target -> $link" >&2
 		exit 1
@@ -76,6 +138,11 @@ walk() {
 		fi
 
 		name=$(basename "$child")
+		# NOTE: install_gtkrc writes this file. Stow must not turn it back into a link.
+		if [ "$name" = ".gtkrc-2.0" ]; then
+			continue
+		fi
+
 		if [ -n "$rel" ]; then
 			walk "$child" "$rel/$name"
 		else
@@ -92,7 +159,10 @@ for dir in "$pkg_dir"/*/; do
 
 	dir=${dir%/}
 	walk "$dir" ""
-	set -- "$@" "$(basename "$dir")"
+	# NOTE: wallpapers is stowed folded below, so new images show up without a rerun.
+	if [ "$(basename "$dir")" != "wallpapers" ]; then
+		set -- "$@" "$(basename "$dir")"
+	fi
 done
 
 if [ "$#" -eq 0 ]; then
@@ -100,7 +170,55 @@ if [ "$#" -eq 0 ]; then
 	exit 1
 fi
 
-stow -R -d "$pkg_dir" -t "$HOME" "$@"
+stow --no-folding --ignore='^\.gtkrc-2\.0$' -R -d "$pkg_dir" -t "$HOME" "$@"
+
+if [ -d "$pkg_dir/wallpapers" ]; then
+	# NOTE: older installs linked each image, and stow only folds a directory it does not find.
+	walls=$HOME/.local/share/wallpapers
+	if [ -d "$walls" ] && [ ! -L "$walls" ]; then
+		for wall in "$walls"/* "$walls"/.[!.]*; do
+			if [ -L "$wall" ] && owned_link "$(readlink "$wall")" "$pkg_dir/wallpapers/.local/share/wallpapers/$(basename "$wall")"; then
+				rm "$wall"
+			fi
+		done
+		rmdir "$walls" 2>/dev/null || true
+	fi
+
+	stow -R -d "$pkg_dir" -t "$HOME" wallpapers
+	set -- "$@" wallpapers
+fi
+
+# NOTE: GTK does not expand ~ in an include, so the home path is filled in here.
+install_gtkrc() {
+	local src=$pkg_dir/gtk/.gtkrc-2.0
+	local dest=$HOME/.gtkrc-2.0
+	local link banner tmp
+
+	if [ ! -f "$src" ]; then
+		return
+	fi
+
+	if [ -L "$dest" ]; then
+		link=$(readlink "$dest")
+		if ! owned_link "$link" "$src"; then
+			echo "refusing to replace $dest -> $link" >&2
+			exit 1
+		fi
+		rm "$dest"
+	elif [ -e "$dest" ]; then
+		banner=$(sed -n '1p' "$dest")
+		if [ "$banner" != "# DO NOT EDIT! This file will be overwritten by nwg-look." ]; then
+			echo "refusing to replace real file $dest" >&2
+			exit 1
+		fi
+	fi
+
+	tmp=$dest.new
+	sed "s#__HOME__#$HOME#g" "$src" > "$tmp"
+	mv "$tmp" "$dest"
+}
+
+install_gtkrc
 
 # NOTE: the wallpaper picker owns this link, so install only seeds it when it is missing or dangling.
 current=$HOME/.config/hypr/wallpaper.jpg
@@ -109,14 +227,25 @@ if [ ! -e "$current" ] && [ -f "$default" ]; then
 	ln -sfn "$default" "$current"
 fi
 
-# NOTE: Stow refuses absolute symlinks, and a relative one breaks when the repo moves.
+# NOTE: Stow refuses absolute symlinks. A folded directory would also make this link land in the checkout.
 theme=/usr/share/themes/Orchis-Grey/gtk-4.0/assets
-assets=$HOME/.config/gtk-4.0/assets
-if [ -d "$theme" ]; then
+gtk_dir=$HOME/.config/gtk-4.0
+assets=$gtk_dir/assets
+if [ -d "$theme" ] && [ -d "$gtk_dir" ] && [ ! -L "$gtk_dir" ]; then
+	resolved=$(readlink -f "$gtk_dir")
+	case $resolved in
+		"$pkg_dir"/* | "$pkg_dir")
+			echo "gtk-4.0 still points into the checkout: $resolved" >&2
+			exit 1
+			;;
+	esac
+
 	if [ -L "$assets" ]; then
 		link=$(readlink "$assets")
 		case $link in
-			*dotfiles/*|*Orchis-Grey*) ln -sfn "$theme" "$assets" ;;
+			*Orchis-Grey* | */packages/gtk/*)
+				ln -sfn "$theme" "$assets"
+				;;
 		esac
 	elif [ ! -e "$assets" ]; then
 		ln -s "$theme" "$assets"

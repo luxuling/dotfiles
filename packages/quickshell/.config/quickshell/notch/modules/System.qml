@@ -4,7 +4,7 @@ import Quickshell.Io
 import ".."
 import "../time.js" as Time
 
-// NOTE: the stats tmux2k used to show (cpu, cpu-temp, ram, bandwidth, uptime), read in one probe while the drawer is up.
+// NOTE: the stats tmux2k used to show (cpu, cpu-temp, ram, bandwidth, uptime) plus root disk, read in one probe while the drawer is up.
 RowLayout {
 	id: root
 
@@ -14,6 +14,9 @@ RowLayout {
 	property int temp: 0
 	property real ramUsedKb: 0
 	property real ramTotalKb: 1
+	property real diskUsedKb: 0
+	property real diskTotalKb: 1
+	property real diskAvailableKb: 0
 	property real downBps: 0
 	property real upBps: 0
 	property int uptimeSeconds: 0
@@ -26,7 +29,7 @@ RowLayout {
 		id: probe
 
 		// ponytail: temp reads AMD k10temp only, swap the name (coretemp on Intel) for other CPUs.
-		command: ["sh", "-c", "head -1 /proc/stat; cat /proc/meminfo /proc/net/dev /proc/uptime; for h in /sys/class/hwmon/*; do [ \"$(cat $h/name)\" = k10temp ] && echo temp $(cat $h/temp1_input); done"]
+		command: ["sh", "-c", "head -1 /proc/stat; cat /proc/meminfo /proc/net/dev /proc/uptime; for h in /sys/class/hwmon/*; do [ \"$(cat $h/name)\" = k10temp ] && echo temp $(cat $h/temp1_input); done; echo disk $(df -kP / | tail -1)"]
 		stdout: StdioCollector {
 			waitForEnd: true
 			onStreamFinished: root.read(text)
@@ -69,6 +72,14 @@ RowLayout {
 
 		ramTotalKb = Number(/MemTotal:\s+(\d+)/.exec(text)[1])
 		ramUsedKb = ramTotalKb - Number(/MemAvailable:\s+(\d+)/.exec(text)[1])
+
+		// NOTE: df -P columns are size, used, available. Its percent is used / (used + available), reserved blocks excluded.
+		const diskMatch = /^disk \S+\s+(\d+)\s+(\d+)\s+(\d+)/m.exec(text)
+		if (diskMatch !== null) {
+			diskTotalKb = Number(diskMatch[1])
+			diskUsedKb = Number(diskMatch[2])
+			diskAvailableKb = Number(diskMatch[3])
+		}
 
 		const tempMatch = /^temp (\d+)/m.exec(text)
 		temp = tempMatch === null ? 0 : Math.round(Number(tempMatch[1]) / 1000)
@@ -158,6 +169,14 @@ RowLayout {
 		detail: `of ${(root.ramTotalKb / 1048576).toFixed(1)} GiB`
 		icon: "cpu-chip-01"
 		fraction: root.ramUsedKb / root.ramTotalKb
+	}
+
+	Tile {
+		label: "disk"
+		value: `${(root.diskUsedKb / 1048576).toFixed(0)} GiB`
+		detail: `of ${(root.diskTotalKb / 1048576).toFixed(0)} GiB`
+		icon: "archive"
+		fraction: root.diskUsedKb / Math.max(1, root.diskUsedKb + root.diskAvailableKb)
 	}
 
 	Tile {

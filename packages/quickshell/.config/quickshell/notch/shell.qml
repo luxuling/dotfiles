@@ -6,19 +6,34 @@
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Io
 import Quickshell.Wayland
 
 ShellRoot {
 	ProjectPicker {}
 	AppLauncher {}
 
+	// NOTE: ALT+W opens the wallpaper page in the notch on the focused screen.
+	IpcHandler {
+		target: "wallpapers"
+
+		function toggle(): void {
+			const name = Hyprland.focusedMonitor?.name
+			const panel = panels.instances.find(panel => panel.modelData.name === name) ?? panels.instances[0]
+			panel?.bar.toggleWallpapers()
+		}
+	}
+
 	Variants {
+		id: panels
+
 		model: Quickshell.screens
 
 		PanelWindow {
 			id: panel
 
 			required property var modelData
+			readonly property alias bar: notch
 
 			screen: modelData
 			color: "transparent"
@@ -34,9 +49,9 @@ ShellRoot {
 			// NOTE: a covered surface gets no frames, so the panel stays on Overlay and unmaps over fullscreen, a popup maps it back.
 			readonly property bool fullscreen: Hyprland.monitorFor(modelData)?.activeWorkspace?.hasFullscreen ?? false
 
-			visible: !fullscreen || (notch.drawerOpen && (notch.drawerKind === "popup" || notch.drawerKind === "agent"))
+			visible: !fullscreen || notch.keyGrab || (notch.drawerOpen && (notch.drawerKind === "popup" || notch.drawerKind === "agent"))
 			WlrLayershell.layer: WlrLayer.Overlay
-			WlrLayershell.keyboardFocus: notch.wantsKeyboard ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+			WlrLayershell.keyboardFocus: notch.keyGrab ? WlrKeyboardFocus.Exclusive : notch.wantsKeyboard ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
 			// NOTE: the shoulder curve is the outside of a circle, so those disks are cut out of the mask.
 			mask: Region {

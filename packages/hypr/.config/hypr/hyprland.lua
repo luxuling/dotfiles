@@ -23,6 +23,7 @@ local screenshot = "hyprshot -m region -o \"$HOME/Pictures/Screenshots\""
 local lockscreen = "hyprlock"
 local screenRecord = "$HOME/.config/scripts/mf-recording.sh"
 local projectPicker = notch .. " ipc call projects toggle"
+local wallpaperPicker = notch .. " ipc call wallpapers toggle"
 
 ----------------------------------------------------------------
 -- AUTOSTART
@@ -193,6 +194,7 @@ hl.bind("Print", hl.dsp.exec_cmd(screenshot))
 hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd(lockscreen))
 hl.bind(mainMod .. " + CTRL + R", hl.dsp.exec_cmd(screenRecord))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(projectPicker))
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(wallpaperPicker))
 
 -- Restart utils
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("pkill -x qs; pkill hyprpaper; " .. notch .. " & hyprpaper &"))
@@ -346,6 +348,16 @@ hl.window_rule({
 	match = { class = "firefox", title = ".*Presentation Window.*" },
 	float = true,
 	pin = true,
+})
+
+-- YouTube live chat window from live-chat-overlay.
+hl.window_rule({
+	name = "livechat",
+	match = { class = "^org.quickshell$", initial_title = "^livechat$" },
+	float = true,
+	pin = true,
+	size = "441 403",
+	move = { "monitor_w - 441 - 11", "45" },
 })
 
 hl.window_rule({

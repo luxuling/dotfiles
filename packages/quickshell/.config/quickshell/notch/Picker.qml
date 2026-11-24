@@ -158,6 +158,8 @@ Scope {
 									box.move(-1)
 								else if (event.key === Qt.Key_P)
 									root.key("C-p", root.shown[list.currentIndex])
+								else if (event.key === Qt.Key_N)
+									root.key("C-n", root.shown[list.currentIndex])
 								else
 									return
 
@@ -278,9 +280,13 @@ Scope {
 				BarText {
 					id: footer
 
+					anchors.left: parent.left
+					anchors.right: parent.right
 					anchors.bottom: parent.bottom
-					anchors.horizontalCenter: parent.horizontalCenter
+					anchors.leftMargin: 16
+					anchors.rightMargin: 16
 					anchors.bottomMargin: 12
+					horizontalAlignment: Text.AlignHCenter
 					text: root.hint
 					font.pixelSize: 11
 					color: Theme.muted

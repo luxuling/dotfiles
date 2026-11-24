@@ -18,8 +18,10 @@ Item {
 	readonly property int screenBudget: Math.max(0, screenWidth - 48)
 	readonly property int barHeight: Theme.foldedHeight
 	readonly property int groupGap: open ? 36 : Theme.gap
-	readonly property bool drawerHovered: clockHover.hovered || spectrumHover.hovered || bell.hovered || agentButton.hovered || memory.hovered || volume.hovered || agentSlotHover.hovered || countdownHover.hovered || drawerHover.hovered || reminderPanel.typing
-	readonly property bool wantsKeyboard: drawerOpen && drawerKind === "reminder"
+	readonly property bool drawerHovered: clockHover.hovered || spectrumHover.hovered || bell.hovered || settingsButton.hovered || agentButton.hovered || memory.hovered || volume.hovered || agentSlotHover.hovered || countdownHover.hovered || drawerHover.hovered || reminderPanel.typing
+	// NOTE: ALT+W opens the wallpaper page without the pointer, so the notch holds the keyboard until it folds.
+	property bool keyGrab: false
+	readonly property bool wantsKeyboard: drawerOpen && (drawerKind === "reminder" || keyGrab)
 	readonly property var spotify: Mpris.players.values.find(player => player.identity === "Spotify") ?? null
 	// NOTE: the popup kept for the fold animation, Notifs.popup is already null by then.
 	property var lastPopup: null
@@ -52,6 +54,29 @@ Item {
 		}
 
 		drawerFold.start()
+	}
+
+	// NOTE: a second ALT+W folds the notch again.
+	function toggleWallpapers() {
+		if (keyGrab) {
+			closeKeys()
+			return
+		}
+
+		drawerFold.stop()
+		collapse.stop()
+		drawerKind = "settings"
+		drawerOpen = true
+		settings.page = "wallpaper"
+		open = true
+		keyGrab = true
+	}
+
+	function closeKeys() {
+		keyGrab = false
+		drawerOpen = false
+		if (!hover.hovered)
+			open = false
 	}
 
 	// NOTE: hovering the cat shows the unseen alert first, otherwise the session list.
@@ -97,6 +122,8 @@ Item {
 	onDrawerKindChanged: {
 		if (drawerKind !== "popup")
 			Notifs.popup = null
+		if (drawerKind !== "settings")
+			keyGrab = false
 	}
 
 	Connections {
@@ -121,8 +148,13 @@ Item {
 	}
 
 	onDrawerOpenChanged: {
-		if (drawerOpen)
+		if (drawerOpen) {
 			calendar.reset()
+			settings.reset()
+			return
+		}
+
+		keyGrab = false
 	}
 
 	Behavior on implicitHeight {
@@ -417,9 +449,13 @@ Item {
 				Row {
 					spacing: 4
 
-					LaunchButton {
-						icon: "dropper"
-						command: ["hyprpicker", "--a"]
+					SettingsButton {
+						id: settingsButton
+
+						onHoveredChanged: {
+							if (hovered)
+								root.drawerKind = "settings"
+						}
 					}
 
 					NotifButton {
@@ -547,6 +583,15 @@ Item {
 			Sound {
 				anchors.fill: parent
 				visible: root.drawerKind === "sound"
+			}
+
+			Settings {
+				id: settings
+
+				anchors.fill: parent
+				visible: root.drawerKind === "settings"
+				keyboard: root.keyGrab
+				onClose: root.closeKeys()
 			}
 
 			ReminderPanel {

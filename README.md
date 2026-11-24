@@ -8,12 +8,13 @@ My Arch Linux + Hyprland setup: a monochrome GrokNight look, one quickshell notc
 ## What I use
 | Package | Tool |
 |---|---|
-| `hypr` | [Hyprland](https://hyprland.org/) (Lua config), hyprpaper, [hyprlock](https://github.com/hyprwm/hyprlock), wallpaper |
-| `quickshell` | [Quickshell](https://quickshell.org/) notch: bar, notifications, app launcher (ALT+SPACE), project picker (ALT+T), reminders, media, coding agents |
+| `hypr` | [Hyprland](https://hyprland.org/) (Lua config), hyprpaper, [hyprlock](https://github.com/hyprwm/hyprlock) |
+| `quickshell` | [Quickshell](https://quickshell.org/) notch: bar, notifications, app launcher (ALT+SPACE), project picker (ALT+T), settings drawer (wallpaper picker on ALT+W, color picker), reminders, media, coding agents |
 | `ghostty` | [Ghostty](https://ghostty.org/) terminal with blur and shaders |
 | `zshrc`, `starship` | Zsh with [Starship](https://starship.rs/) prompt |
 | `tmux` | [Tmux](https://github.com/tmux/tmux) (no plugins) |
 | `nvim` | [NeoVim](https://neovim.io/) |
+| `wallpapers` | Wallpapers in `~/.local/share/wallpapers`, picked from the notch settings drawer or ALT+W |
 | `scripts` | `coding` (tmux session per project) and `mf-recording.sh` (screen recording) |
 | `gtk` | GTK Orchis-Grey theme, retrosmart cursor |
 | `helium` | [Helium](https://helium.computer/) browser flags |
@@ -23,13 +24,28 @@ My Arch Linux + Hyprland setup: a monochrome GrokNight look, one quickshell notc
 Font: [Maple Mono NF CN](https://github.com/subframe7536/maple-font). Coding agents: Claude Code and Grok Build, both shown in the notch.
 
 ## How to use
-Configs live in `packages/`. [`install`](./install) links them into your home directory with [GNU Stow](https://www.gnu.org/software/stow/). The clone can sit in any directory. This is the path I use:
+Configs live in `packages/`. [`install`](./install) links them into your home directory with [GNU Stow](https://www.gnu.org/software/stow/). On a fresh machine, one line clones the repo to `~/dotfiles` and links it:
 
 ```bash
-git clone git@github.com:luxuling/dotfiles.git ~/MINE/codes/personal/dotfiles
-cd ~/MINE/codes/personal/dotfiles
-./install
+curl -fsSL https://raw.githubusercontent.com/luxuling/dotfiles/main/install | sh
 ```
+
+To clone into a different directory, put `DOTFILES=` with that path right before `sh`. For example, to use `~/code/dotfiles`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/luxuling/dotfiles/main/install | DOTFILES=~/code/dotfiles sh
+```
+
+Running either command again does not clone a second time. It links the clone that is already there and does not pull new changes. To update, run `git pull` inside the clone, then run `sh ~/dotfiles/install` (or your own path).
+
+To read the script before it runs, clone first. The clone can sit in any directory, with any folder name. Run it by path from any working directory:
+
+```bash
+git clone https://github.com/luxuling/dotfiles.git /path/to/dotfiles
+sh /path/to/dotfiles/install
+```
+
+`/path/to/dotfiles` is the directory you cloned into. From inside that directory, `./install` does the same thing.
 
 `./install` is safe to run again. After you move the checkout, run it from the new directory and it relinks home to that location. It will not overwrite a real file. When the Orchis-Grey theme is installed, it also points `~/.config/gtk-4.0/assets` at that theme.
 
@@ -39,7 +55,7 @@ Not in the repo, install them yourself:
 - notch runtime tools: `mpg123`, `pw-play`, `cava`, `hyprpicker`, `hyprshot`, `curl`
 - secrets go in `~/.secrets.zsh`, which is git-ignored
 
-Wallpapers live in `packages/wallpapers/.local/share/wallpapers/`. Install links that folder to `~/.local/share/wallpapers`. A first install points `~/.config/hypr/wallpaper.jpg` at `default.jpg`. `personal.jpg` in that folder is git-ignored.
+To add a wallpaper, drop it in `packages/wallpapers/.local/share/wallpapers/`. It shows up in the picker right away, `~/.local/share/wallpapers` links to that folder. hyprpaper and hyprlock read `~/.config/hypr/wallpaper.jpg`, a link the picker repoints. A first install points that link at `default.jpg`. `personal.jpg` in that folder is git-ignored.
 
 The notch starts from Hyprland as `qs -c notch`. Reload it with ALT+SHIFT+R.
 
