@@ -102,6 +102,13 @@ fi
 
 stow -R -d "$pkg_dir" -t "$HOME" "$@"
 
+# NOTE: the wallpaper picker owns this link, so install only seeds it when it is missing or dangling.
+current=$HOME/.config/hypr/wallpaper.jpg
+default=$HOME/.local/share/wallpapers/default.jpg
+if [ ! -e "$current" ] && [ -f "$default" ]; then
+	ln -sfn "$default" "$current"
+fi
+
 # NOTE: Stow refuses absolute symlinks, and a relative one breaks when the repo moves.
 theme=/usr/share/themes/Orchis-Grey/gtk-4.0/assets
 assets=$HOME/.config/gtk-4.0/assets

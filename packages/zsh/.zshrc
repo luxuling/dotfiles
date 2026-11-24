@@ -45,10 +45,6 @@ case ":$PATH:" in
 esac
 # pnpm end
 
-
-# Pi
-export PATH="$HOME/.local/share/pi-node/node-v22.23.2-linux-x64/bin:$PATH"
-
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 

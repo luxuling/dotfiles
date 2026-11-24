@@ -19,7 +19,6 @@ My Arch Linux + Hyprland setup: a monochrome GrokNight look, one quickshell notc
 | `helium` | [Helium](https://helium.computer/) browser flags |
 | `git` | Git config and global ignore |
 | `fastfetch` | [fastfetch](https://github.com/fastfetch-cli/fastfetch) |
-| `pi` | [pi](https://github.com/earendil-works/pi) coding agent (`~/.pi/agent`) |
 
 Font: [Maple Mono NF CN](https://github.com/subframe7536/maple-font). Coding agents: Claude Code and Grok Build, both shown in the notch.
 
@@ -39,7 +38,8 @@ Not in the repo, install them yourself:
 - Orchis-Grey GTK theme and the retrosmart cursor (`~/.local/share/icons`)
 - notch runtime tools: `mpg123`, `pw-play`, `cava`, `hyprpicker`, `hyprshot`, `curl`
 - secrets go in `~/.secrets.zsh`, which is git-ignored
-- the wallpaper. hyprpaper and hyprlock both read `~/.config/hypr/wallpaper.jpg`, and that file is git-ignored
+
+Wallpapers live in `packages/wallpapers/.local/share/wallpapers/`. Install links that folder to `~/.local/share/wallpapers`. A first install points `~/.config/hypr/wallpaper.jpg` at `default.jpg`. `personal.jpg` in that folder is git-ignored.
 
 The notch starts from Hyprland as `qs -c notch`. Reload it with ALT+SHIFT+R.
 
